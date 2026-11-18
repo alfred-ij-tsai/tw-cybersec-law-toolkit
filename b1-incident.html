@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-1 事件通報底稿產生器｜資通安全管理法法令遵循工具箱</title>
+<style>
+:root{
+  --ink:#16233A;--ink-2:#3A4A64;--muted:#6B7789;
+  --rule:#D3DAE3;--rule-soft:#E6EAF0;--field:#EDF1F6;--paper:#FFFFFF;
+  --seal:#1F5E63;--seal-soft:#E4F0F0;--amber:#8A5A12;--amber-soft:#FBF2E0;
+  --red:#A8322D;--red-soft:#F5E9E8;--ok:#2F6B3A;--ok-soft:#E8F2EA;
+  --serif:"Noto Serif TC","Songti TC","Source Han Serif TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--field);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+header.top{border-bottom:1px solid var(--rule);background:var(--paper)}
+header.top .inner{max-width:1240px;margin:0 auto;padding:22px 20px 18px}
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--muted);margin:0 0 6px}
+.eyebrow a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif);font-size:26px;font-weight:600;margin:0 0 8px;letter-spacing:.02em}
+.sub{margin:0;color:var(--ink-2);font-size:13.5px}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 20px 80px}
+.cols{display:grid;grid-template-columns:420px 1fr;gap:24px;align-items:start}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}}
+.form{background:var(--paper);border:1px solid var(--rule);padding:4px 22px 22px}
+fieldset{border:0;border-bottom:1px solid var(--rule-soft);margin:0;padding:18px 0}
+fieldset:last-of-type{border-bottom:0}
+legend{font-family:var(--serif);font-weight:600;font-size:15.5px;padding:0;margin-bottom:10px;float:left;width:100%}
+legend .n{font-family:var(--mono);font-size:11.5px;color:var(--seal);margin-right:8px}
+legend+*{clear:both}
+label.f{display:block;font-size:13px;color:var(--ink-2);margin:10px 0 4px}
+label.f small{color:var(--muted)}
+input[type=text],input[type=datetime-local],select,textarea{width:100%;font-family:var(--sans);font-size:14px;padding:8px 10px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:0}
+textarea{min-height:64px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.radios{display:flex;flex-wrap:wrap;gap:6px}
+.radios label{font-size:13px;border:1px solid var(--rule);padding:5px 10px;cursor:pointer;background:#fff;display:flex;gap:6px;align-items:center}
+.radios input{margin:0}
+.radios label:has(input:checked){border-color:var(--ink);background:var(--ink);color:#fff}
+.typ{border:1px solid var(--rule-soft);padding:10px 12px;margin-top:8px;background:#FAFBFC}
+.typ>label.h{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:600;cursor:pointer}
+.typ .more{display:none;padding-left:22px}
+.typ.on .more{display:block}
+.hint{font-size:12px;color:var(--muted);line-height:1.7;margin:6px 0 0}
+.lvl{margin-top:12px;padding:10px 12px;background:var(--seal-soft);border-left:3px solid var(--seal);font-size:13.5px}
+.lvl b{font-family:var(--mono);font-size:16px;color:var(--seal)}
+.lvl.major{background:var(--red-soft);border-left-color:var(--red)}
+.lvl.major b{color:var(--red)}
+.btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+button.b{font-family:var(--sans);font-size:13.5px;padding:9px 16px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+button.b.ghost{background:#fff;color:var(--ink)}
+
+/* 輸出 */
+.out{min-width:0}
+.card{background:var(--paper);border:1px solid var(--rule);margin-bottom:18px}
+.card>h2{font-family:var(--serif);font-size:17px;font-weight:600;margin:0;padding:15px 22px 12px;border-bottom:2px solid var(--ink)}
+.card>h2 .n{font-family:var(--mono);font-size:11.5px;color:var(--seal);margin-right:10px}
+.card .in{padding:16px 22px}
+.empty{padding:60px 22px;text-align:center;color:var(--muted);font-size:14px}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--rule-soft)}
+@media(max-width:700px){.sum{grid-template-columns:1fr 1fr}}
+.sum>div{padding:16px 18px;border-right:1px solid var(--rule-soft)}
+.sum>div:last-child{border-right:0}
+.sum .k{font-size:12.5px;color:var(--muted);letter-spacing:.06em}
+.sum .v{font-family:var(--mono);font-weight:700;font-size:19px;line-height:1.4;margin-top:6px;color:var(--ink)}
+.sum .v.lvv{font-family:var(--serif)}
+#tl td{padding:13px 12px;font-size:14.5px}
+#tl td.dl{font-size:17px;font-weight:700;color:var(--ink)}
+#tl td.src{font-size:12px}
+#tl .st{font-size:14px;font-weight:700;padding:4px 12px;border-width:2px}
+.sum .v.red{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--rule-soft);padding:9px 10px;text-align:left;vertical-align:top;line-height:1.7}
+th{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.05em;background:#F7F9FB}
+td.dl{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+td.src{font-size:12px;color:var(--muted)}
+.st{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid;white-space:nowrap}
+.st.over{color:var(--red);border-color:var(--red);background:var(--red-soft)}
+.st.ok{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.st.wait{color:var(--amber);border-color:var(--amber);background:var(--amber-soft)}
+.st.ref{color:var(--muted);border-color:var(--rule)}
+.alert{font-size:13px;line-height:1.85;padding:10px 14px;margin:0 0 10px;border-left:3px solid var(--amber);background:var(--amber-soft);color:var(--ink-2)}
+.alert.red{border-left-color:var(--red);background:var(--red-soft)}
+.alert b{color:var(--ink)}
+.alert:last-child{margin-bottom:0}
+.draft{font-size:13.5px;line-height:1.9}
+.draft .row{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:8px 0;border-bottom:1px dashed var(--rule-soft)}
+.draft .row:last-child{border-bottom:0}
+.draft .row .k{color:var(--muted);font-size:12.5px}
+.draft .todo{color:var(--amber)}
+ul.chk{list-style:none;margin:0;padding:0}
+ul.chk li{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid var(--rule-soft);font-size:13.5px}
+ul.chk li:last-child{border-bottom:0}
+ul.chk li small{display:block;color:var(--muted);font-size:12px}
+ul.chk h4{font-size:12px;letter-spacing:.08em;color:var(--seal);margin:14px 0 4px;font-weight:600}
+ul.chk h4:first-child{margin-top:0}
+pre.prompt{white-space:pre-wrap;font-family:var(--mono);font-size:12px;line-height:1.75;background:#F7F9FB;border:1px solid var(--rule);padding:14px;margin:0 0 10px;max-height:420px;overflow:auto}
+.foot{margin-top:26px;background:#FAFBFC;border:1px solid var(--rule);padding:20px 26px 24px}
+.foot p{margin:0 0 8px;font-size:12px;color:var(--muted);line-height:1.85}
+.foot p:last-child{margin-bottom:0}
+.foot b{color:var(--ink-2)}
+@media print{
+  body{background:#fff;font-size:10.5pt;font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif}
+  h1,.card>h2,.sum .v{font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif!important}
+  header.top .eyebrow,.form,.noprint{display:none!important}
+  .cols{display:block}
+  .wrap{padding:0}
+  .card{border:0;break-inside:avoid}
+  pre.prompt{max-height:none}
+}
+
+/* ── 左側章節縱軸 ── */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;max-height:86vh}
+.rail.on{display:flex}
+.rail::before{content:"";position:absolute;left:5px;top:12px;bottom:12px;width:1px;background:var(--rule)}
+.rail a{position:relative;display:flex;align-items:center;gap:10px;padding:6px 0;text-decoration:none;cursor:pointer}
+.rail a i{flex:0 0 auto;display:block;width:9px;height:9px;margin-left:1px;border:1px solid var(--muted);background:var(--paper);border-radius:50%;position:relative;z-index:1}
+.rail a:hover i{border-color:var(--ink)}
+.rail a.on i{width:11px;height:11px;margin-left:0;background:var(--seal);border-color:var(--seal)}
+.rail a b{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.rail a.on b{color:var(--seal);font-weight:700}
+.rail a:hover b{color:var(--ink)}
+.rail a span{font-size:12px;line-height:1.5;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((100vw - 1240px)/2 - 46px)}
+.rail a:hover span{color:var(--ink)}
+.rail a.on span{color:var(--ink);font-weight:600}
+@media(min-width:1560px){.rail a b{display:none}}
+@media(max-width:1559px){
+  .rail a span{position:absolute;left:100%;margin-left:8px;max-width:none;background:#fff;border:1px solid var(--ink);padding:2px 9px;opacity:0;pointer-events:none;z-index:2}
+  .rail a:hover span{opacity:1}
+}
+@media(min-width:1001px) and (max-width:1420px){body.hasrail{padding-left:84px}}
+@media(max-width:1000px){.rail{display:none!important}}
+@media print{.rail{display:none!important}body.hasrail{padding-left:0}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <p class="eyebrow"><a href="index.html">資通安全管理法法令遵循工具箱</a>　／　文件 B-1　·　ver.1.0</p>
+    <h1>事件通報底稿產生器</h1>
+    <p class="sub">特定非公務機關及上市上櫃公司適用。填入知悉時點與事件情況，產出時序總覽、通報單草稿、查核清單及可交付 AI 的提示詞</p>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="cols">
+
+<form class="form noprint" id="f" autocomplete="off" onsubmit="return false">
+
+  <fieldset>
+    <legend><span class="n">01</span>機關與知悉時點</legend>
+    <label class="f" for="org">機關名稱 <small>（用於通報單第 1 款「發生機關」）</small></label>
+    <input type="text" id="org" placeholder="例：○○股份有限公司">
+    <label class="f" for="reg">中央目的事業主管機關</label>
+    <select id="reg"></select>
+    <label class="f">是否經指定為關鍵基礎設施提供者</label>
+    <div class="radios" id="ci">
+      <label><input type="radio" name="ci" value="y">是</label>
+      <label><input type="radio" name="ci" value="n" checked>否</label>
+      <label><input type="radio" name="ci" value="u">不確定</label>
+    </div>
+    <label class="f">是否屬資安法之特定非公務機關</label>
+    <div class="radios" id="sn">
+      <label><input type="radio" name="sn" value="y" checked>是</label>
+      <label><input type="radio" name="sn" value="n">否</label>
+    </div>
+    <label class="f">是否為上市或上櫃公司</label>
+    <div class="radios" id="lc">
+      <label><input type="radio" name="lc" value="y">是</label>
+      <label><input type="radio" name="lc" value="n" checked>否</label>
+    </div>
+    <label class="f" for="known">知悉時點 <small>（必填；所有時限自此起算）</small></label>
+    <input type="datetime-local" id="known">
+    <label class="f" for="reported">已完成通報之時點 <small>（尚未通報者留空）</small></label>
+    <input type="datetime-local" id="reported">
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="n">02</span>事件等級（通報辦法第 2 條）</legend>
+    <p class="hint" style="margin-top:0">勾選事件之影響型態，再選擇標的與程度。可複選，以最高等級為準。</p>
+
+    <div class="typ" data-t="leak">
+      <label class="h"><input type="checkbox" class="tg">資訊遭洩漏</label>
+      <div class="more">
+        <label class="f">遭洩漏之標的</label>
+        <select class="obj">
+          <option value="1">非核心業務資訊</option>
+          <option value="2">核心業務資訊（未涉及關鍵基礎設施維運）</option>
+          <option value="3">一般公務機密，或涉及關鍵基礎設施維運之核心業務資訊</option>
+          <option value="9">國家機密</option>
+        </select>
+        <label class="f">程度</label>
+        <div class="radios"><label><input type="radio" name="leak-d" value="0" checked>輕微</label><label><input type="radio" name="leak-d" value="1">嚴重</label></div>
+      </div>
+    </div>
+
+    <div class="typ" data-t="tamper">
+      <label class="h"><input type="checkbox" class="tg">資訊或資通系統遭竄改</label>
+      <div class="more">
+        <label class="f">遭竄改之標的</label>
+        <select class="obj">
+          <option value="1">非核心業務資訊或非核心資通系統</option>
+          <option value="2">核心業務資訊或核心資通系統（未涉及關鍵基礎設施維運）</option>
+          <option value="3">一般公務機密，或涉及關鍵基礎設施維運之核心業務資訊或核心資通系統</option>
+          <option value="9">國家機密</option>
+        </select>
+        <label class="f">程度</label>
+        <div class="radios"><label><input type="radio" name="tamper-d" value="0" checked>輕微</label><label><input type="radio" name="tamper-d" value="1">嚴重</label></div>
+      </div>
+    </div>
+
+    <div class="typ" data-t="ops">
+      <label class="h"><input type="checkbox" class="tg">資通系統運作受影響或停頓</label>
+      <div class="more">
+        <label class="f">受影響之系統</label>
+        <select class="obj">
+          <option value="1">非核心資通系統</option>
+          <option value="2">核心資通系統（未涉及關鍵基礎設施維運）</option>
+          <option value="3">涉及關鍵基礎設施維運之核心資通系統</option>
+        </select>
+        <label class="f">能否於可容忍中斷時間內回復正常運作</label>
+        <div class="radios"><label><input type="radio" name="ops-d" value="0" checked>能</label><label><input type="radio" name="ops-d" value="1">不能（或尚無法判斷）</label></div>
+      </div>
+    </div>
+
+    <div class="lvl" id="lvlbox">尚未勾選影響型態</div>
+
+    <label class="f" for="lvlo">採用之通報等級 <small>（預設採上方推導結果，可自行覆寫）</small></label>
+    <select id="lvlo">
+      <option value="auto">依上方推導</option>
+      <option value="1">第一級</option><option value="2">第二級</option>
+      <option value="3">第三級（重大）</option><option value="4">第四級（重大）</option>
+    </select>
+    <label class="f" for="chg">等級變更之時點 <small>（等級曾變更者填寫，用以計算續行通報）</small></label>
+    <input type="datetime-local" id="chg">
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="n">03</span>事件情境</legend>
+    <label class="f">是否涉及個人資料外洩</label>
+    <div class="radios" id="pd">
+      <label><input type="radio" name="pd" value="y">是</label>
+      <label><input type="radio" name="pd" value="n" checked>否</label>
+      <label><input type="radio" name="pd" value="u">尚不確定</label>
+    </div>
+    <label class="f">是否涉及受託者（委外之資通系統或服務）</label>
+    <div class="radios" id="vd">
+      <label><input type="radio" name="vd" value="y">是</label>
+      <label><input type="radio" name="vd" value="n" checked>否</label>
+    </div>
+    <label class="f">主管機關指定之通報方式目前是否可用</label>
+    <div class="radios" id="ch">
+      <label><input type="radio" name="ch" value="y" checked>可用</label>
+      <label><input type="radio" name="ch" value="n">無法使用</label>
+    </div>
+    <label class="f" for="done">損害控制或復原完成之時點 <small>（尚未完成者留空）</small></label>
+    <input type="datetime-local" id="done">
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="n">04</span>通報單內容 <small style="font-family:var(--sans);font-weight:400;font-size:12px;color:var(--muted)">（選填）</small></legend>
+    <label class="f" for="desc">狀況之描述</label>
+    <textarea id="desc" placeholder="發現經過、受影響系統、目前狀態"></textarea>
+    <label class="f" for="acts">因應事件所採取之措施</label>
+    <textarea id="acts" placeholder="例：隔離受影響主機、重設帳號密碼、啟用備援"></textarea>
+    <label class="f" for="ext">外部支援需求評估</label>
+    <textarea id="ext" placeholder="例：需鑑識支援／暫無需求"></textarea>
+    <div class="btns">
+      <button type="button" class="b" id="go">產出底稿</button>
+      <button type="button" class="b ghost" id="now">知悉時點設為現在</button>
+      <button type="button" class="b ghost" id="clr">清除</button>
+    </div>
+    <p class="hint">所有填答僅在本頁面中運算，不會上傳或儲存；重新整理頁面即清除。</p>
+  </fieldset>
+</form>
+
+<div class="out" id="out">
+  <div class="card"><div class="empty">填入知悉時點並按「產出底稿」</div></div>
+</div>
+
+</div>
+
+<div class="foot">
+  <p><b>計算方式</b>　調查、處理及改善報告之一個月，依資通安全署「資通安全管理法常見問題」（版本 1150213）之說明，依行政程序法第 48 條計算，自完成損害控制或復原作業之次日起算（例：3 月 31 日完成者，4 月 30 日屆滿）；尚未填入完成時點時，本工具先以知悉日暫估，完成後請填入完成時點重新產出。以時計算之期間即時起算（參照同條第 1 項）。末日如逢星期六、星期日、國定假日或其他休息日，同條第 4 項另有順延規定，本工具<b>不自動順延</b>，保守以未順延之日為準。等級變更之續行通報，條文未另定起算點，本工具以等級變更時點起算一小時，為編者解讀。</p>
+  <p><b>等級推導</b>　依通報辦法第 2 條之文義建置，「輕微」「嚴重」及「可容忍中斷時間」之判斷，仍應依貴機構通報作業規範認定；推導結果僅供參考，最終以中央目的事業主管機關審核結果為準（通報辦法第 12 條）。</p>
+  <p><b>依據版本</b>　資通安全管理法 114.09.24 修正公布、114.12.01 施行；施行細則及通報辦法 115.01.05 修正發布。條文對照見 <a href="b2-reporting.html">B-2 事件通報對照表</a>。</p>
+  <p><b>免責聲明</b>　本工具產出之底稿為法令遵循參考資料，不構成法律意見。所引法規應以全國法規資料庫現行有效版本為準。具體個案請諮詢法律專業人士。</p>
+  <p>資通安全管理法法令遵循工具箱／文件 B-1　作者：蔡易融　授權：CC BY-NC-SA 4.0　·　工具箱版本 ver.1.0</p>
+</div>
+</div>
+
+<script>
+/* ============================================================
+   中央目的事業主管機關清單（與 A-2 法規盤點表乙部一致）
+   新法：true＝該作業辦法第 1 條已改依資安法第 22 條
+   ============================================================ */
+const 主管 = [
+  ["內政部","D0010120",false],["外交部","E0010027",false],["國防部","F0010073",false],
+  ["財政部","G0310083",true],["教育部","H0020084",false],["法務部","I0050031",false],
+  ["經濟部","J0010055",true],["交通部","K0010150",false],["數位發展部","K0010161",false],
+  ["衛生福利部","L0010063",false],["農業部","M0010037",false],["環境部","O0010017",false],
+  ["文化部","H0170147",false],["國家科學及技術委員會","H0160073",false],
+  ["金融監督管理委員會","G0380265",false],["國家通訊傳播委員會","K0010151",false],
+  ["核能安全委員會","J0160085",false],["中央銀行","G0420009",true],
+  ["大陸委員會","Q0010011",false],["僑務委員會","E0040028",false],
+  ["國軍退除役官兵輔導委員會","F0150112",false],["原住民族委員會","D0130040",false],
+  ["客家委員會","D0140021",false],["司法院","A0030313",false]
+];
+const 法規 = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=";
+const PDPA = "https://alfred-ij-tsai.github.io/tw-pdpa-gcbpr-toolkit/b1-incident.html";
+
+/* ============================================================
+   以下為運算與顯示邏輯
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const 週 = "日一二三四五六";
+
+$("#reg").innerHTML = `<option value="">— 請選擇 —</option>` +
+  主管.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join("") +
+  `<option value="x">尚未確認／不在清單中</option>`;
+
+function 讀時(id){ const v = $(id).value; return v ? new Date(v) : null; }
+function 民國(d, 含時 = true){
+  if (!d) return "—";
+  const p = n => String(n).padStart(2,"0");
+  const s = `${d.getFullYear()-1911}.${p(d.getMonth()+1)}.${p(d.getDate())}（${週[d.getDay()]}）`;
+  return 含時 ? `${s} ${p(d.getHours())}:${p(d.getMinutes())}` : s;
+}
+const 加時 = (d,h) => new Date(d.getTime() + h*3600e3);
+function 加月(d, n){
+  /* 行政程序法第 48 條：始日不計，以次月相當日為末日；無相當日者以該月末日 */
+  const y = d.getFullYear(), m = d.getMonth() + n, day = d.getDate();
+  const 末 = new Date(y, m + 1, 0).getDate();
+  return new Date(y, m, Math.min(day, 末), 23, 59);
+}
+
+/* 通報辦法第 2 條：依型態、標的、程度推導等級 */
+function 推導(){
+  let max = 0; const 理由 = [];
+  for (const box of $$(".typ")){
+    const on = box.querySelector(".tg").checked;
+    box.classList.toggle("on", on);
+    if (!on) continue;
+    const t = box.dataset.t;
+    const obj = +box.querySelector(".obj").value;
+    const d = +box.querySelector(`input[name="${t}-d"]:checked`).value;
+    let lv;
+    if (obj === 9) lv = 4;            /* 國家機密遭洩漏或竄改：第四級 */
+    else lv = obj + d;                /* 標的 1–3，嚴重或無法回復者升一級 */
+    const 名 = {leak:"洩漏",tamper:"竄改",ops:"運作受影響或停頓"}[t];
+    理由.push(`${名}：第${"一二三四"[lv-1]}級`);
+    max = Math.max(max, lv);
+  }
+  const box = $("#lvlbox");
+  if (!max){ box.className = "lvl"; box.textContent = "尚未勾選影響型態"; return 0; }
+  box.className = "lvl" + (max >= 3 ? " major" : "");
+  box.innerHTML = `推導結果：<b>第${"一二三四"[max-1]}級</b>${max>=3?"（重大資通安全事件）":""}<br><span style="font-size:12px;color:var(--muted)">${理由.join("；")}</span>`;
+  return max;
+}
+$$(".typ input, .typ select").forEach(el => el.addEventListener("change", 推導));
+
+function 狀態(期限, 完成, 現在){
+  if (完成) return 完成 <= 期限 ? `<span class="st ok">已於期限內完成</span>` : `<span class="st over">逾期完成</span>`;
+  if (現在 > 期限) return `<span class="st over">已逾期</span>`;
+  const 剩 = (期限 - 現在) / 3600e3;
+  const 文 = 剩 < 48 ? `${Math.floor(剩)} 小時 ${Math.round((剩%1)*60)} 分` : `${Math.ceil(剩/24)} 日`;
+  return `<span class="st wait">剩餘 ${文}</span>`;
+}
+
+function 產出(){
+  const 知 = 讀時("#known");
+  if (!知){ $("#out").innerHTML = `<div class="card"><div class="empty">請先填入知悉時點</div></div>`; return; }
+  const 現在 = new Date();
+  const 推 = 推導();
+  const lo = $("#lvlo").value;
+  const 級 = lo === "auto" ? 推 : +lo;
+  const 重大 = 級 >= 3;
+  const 報 = 讀時("#reported"), 變 = 讀時("#chg"), 畢 = 讀時("#done");
+  const ci = document.querySelector('input[name=ci]:checked').value;
+  const sn = document.querySelector('input[name=sn]:checked').value;
+  const lc = document.querySelector('input[name=lc]:checked').value;
+  const 態 = (a,b) => sn === "n" ? `<span class="st ref">非適用對象，供參考</span>` : 狀態(a,b,現在);
+  const pd = document.querySelector('input[name=pd]:checked').value;
+  const vd = document.querySelector('input[name=vd]:checked').value;
+  const ch = document.querySelector('input[name=ch]:checked').value;
+  const ri = $("#reg").value;
+  const m = (ri !== "" && ri !== "x") ? 主管[+ri] : null;
+  const 機關 = $("#org").value.trim();
+  const 級名 = 級 ? `第${"一二三四"[級-1]}級` : "未判定";
+
+  /* 時序 */
+  const 列 = [];
+  const t通報 = 加時(知, 1);
+  列.push(["通報中央目的事業主管機關", t通報, 態(t通報, 報), "資安法第 24 條第 2 項；通報辦法第 11 條第 1 項"]);
+  if (變){ const t = 加時(變, 1); 列.push(["等級變更之續行通報", t, 態(t, null), "通報辦法第 11 條第 2 項"]); }
+  if (級){
+    const 基 = 報 || t通報;
+    const t = 加時(基, 重大 ? 2 : 8);
+    列.push([`主管機關審核等級（${重大?"2":"8"} 小時）`, t, `<span class="st ref">主管機關義務</span>`, "通報辦法第 12 條第 1 項" + (報 ? "" : "；以通報期限推估")]);
+    const t控 = 加時(知, 重大 ? 36 : 72);
+    列.push([`完成損害控制或復原並辦理通知（${重大?"36":"72"} 小時）`, t控, 態(t控, 畢), `通報辦法第 13 條第 1 項第 ${重大?"2":"1"} 款`]);
+  }
+  const t報告 = 加月(畢 || 知, 1);
+  列.push([`送交調查、處理及改善報告${畢?"":"（暫估：尚未完成損害控制，先以知悉日起算）"}`, t報告, 態(t報告, null), "資安法第 24 條第 3 項；通報辦法第 13 條第 2 項"]);
+
+  /* 提醒 */
+  const 醒 = [];
+  if (sn === "n") 醒.push(["", `<b>貴機構非資安法之特定非公務機關。</b>資安法之通報及應變時限不適用，上方時序僅供內部應變參考；請依貴機構之事件應變程序處理${lc==="y"?"，並評估下列重大訊息義務":""}。`]);
+  if (lc === "y") 醒.push(["red", `<b>上市櫃公司：評估是否發布重大訊息。</b>資通安全事件致造成公司重大損害或影響等情事者，屬重大訊息，應於事實發生日起次一營業日交易時間開始二小時前輸入公開資訊觀測站；於其前發布新聞稿者，應同時輸入（上市公司、上櫃公司重大訊息之查證暨公開處理程序第 4 條第 1 項第 26 款、第 6 條第 1 項第 1 款，均為 115 年 9 月 30 日修正版）。重大性之判斷可參考證交所、櫃買中心之「重大訊息發布應注意事項參考問答集」，並留存評估紀錄。此與資安法、個資法之通報為各自獨立之軌道。`]);
+  if (sn !== "n" && !報 && 現在 > t通報) 醒.push(["red", `<b>一小時通報時限已屆至。</b>未通報者依資安法第 29 條處新臺幣 30 萬元以上 1,000 萬元以下罰鍰，並令限期改正。請立即通報，並保存延遲事由之紀錄。`]);
+  if (sn !== "n" && 報 && 報 > t通報) 醒.push(["red", `<b>通報時點晚於知悉後一小時。</b>逾時通報屬未依資安法第 24 條第 2 項規定通報，有第 29 條之適用（作者見解）。請保存延遲事由及知悉時點認定依據之紀錄。`]);
+  if (!級) 醒.push(["", `<b>尚未判定等級。</b>通報辦法第 3 條第 4 款要求通報內容包括「等級之評估」，請於通報前完成初判；第 72／36 小時之時限亦取決於等級。`]);
+  if (重大) 醒.push(["red", `<b>重大資通安全事件（第三、四級）。</b>資通安全長應召開會議研商相關事宜（通報辦法第 14 條第 3 項）；調查、處理及改善報告除提出予中央目的事業主管機關外，並應送交主管機關（資安法第 24 條第 3 項）；中央目的事業主管機關得通知到場陳述、要求提出獨立第三方鑑識或調查報告、實地檢查（資安法第 25 條）。`]);
+  if (ch === "n") 醒.push(["", `<b>指定之通報方式無法使用。</b>應於一小時內依其他適當方式通報，並註記無法依規定方式通報之事由；事由解除後，應依指定方式補行通報（通報辦法第 11 條第 3 項、第 4 項）。`]);
+  if (pd !== "n") 醒.push([pd==="y"?"red":"", `<b>${pd==="y"?"涉及":"可能涉及"}個人資料外洩。</b>依資安法第 33 條應另依個人資料保護法辦理，通報對象、時限與格式不同，應分別進行。可使用 <a href="${PDPA}" target="_blank" rel="noopener">個資事故應對底稿產生器</a>。`]);
+  if (vd === "y") 醒.push(["", `<b>涉及受託者。</b>確認受託者是否已依契約立即通知並說明補救措施（施行細則第 7 條第 1 項第 5 款）；與重大事件相關之受託者得為調查之關係人（資安法第 25 條第 2 項）。`]);
+  if (sn !== "n" && ci === "u") 醒.push(["", `<b>是否為關鍵基礎設施提供者尚不確定。</b>以中央目的事業主管機關之書面核定通知為準（資安法第 20 條第 1 項）；此影響責任等級及作業辦法中之年度義務，惟不影響本頁之通報時限。`]);
+  if (sn === "n") {} else if (!m) 醒.push(["", `<b>尚未選定中央目的事業主管機關。</b>通報之「指定方式」由中央目的事業主管機關決定，請先確認，見 <a href="a2-regulations.html#partB">A-2 法規盤點表乙部</a>。業務涉及數個中央目的事業主管機關者，主管機關得協調指定（資安法第 32 條第 3 項）。`]);
+  else if (!m[2]) 醒.push(["", `<b>${m[0]}之作業辦法第 1 條仍援引修正前資安法條次。</b>通報義務本身依資安法及通報辦法，不受影響；惟指定之通報方式與窗口，請向${m[0]}確認現行作法。`]);
+
+  /* 查核清單 */
+  const 清 = [
+    ["通報", [
+      ["記錄知悉時點及其認定依據", "告警時間、內部回報時間等"],
+      ["初判事件等級並記錄判定依據、判定人", "通報辦法第 2 條；通報作業規範"],
+      ["於知悉後一小時內，依指定方式通報", "通報辦法第 11 條第 1 項"],
+      ["通報內容逐項填載七款", "通報辦法第 3 條，見下方草稿"],
+      ...(ch==="n" ? [["以其他適當方式通報並註記事由；事由解除後補行通報", "通報辦法第 11 條第 3 項、第 4 項"]] : []),
+      ["等級變更時，於一小時內續行通報", "通報辦法第 11 條第 2 項"],
+      ["追蹤主管機關審核結果；等級變更者重新檢視時程", "通報辦法第 12 條"],
+      ...(lc==="y" ? [["評估事件是否構成重大訊息並留存評估紀錄；構成者於次一營業日交易時間開始二小時前輸入公開資訊觀測站", "上市公司、上櫃公司重大訊息處理程序第 4 條第 1 項第 26 款、第 6 條第 1 項第 1 款"]] : [])
+    ]],
+    ["應變", [
+      ["啟動應變小組", "通報辦法第 5 條第 1 款"],
+      ["保全事件相關紀錄（日誌、映像檔、通聯）", "通報辦法第 5 條第 5 款"],
+      [`於知悉後 ${重大?"36":"72"} 小時內完成損害控制或復原`, `通報辦法第 13 條第 1 項`],
+      ["完成後依指定方式辦理通知", "通報辦法第 13 條第 1 項"],
+      ...(重大 ? [["資通安全長召開會議研商相關事宜", "通報辦法第 14 條第 3 項"]] : []),
+      ...(vd==="y" ? [["取得受託者之事件通知及補救措施說明", "施行細則第 7 條第 1 項第 5 款"]] : [])
+    ]],
+    ["報告", [
+      ["持續調查及處理，於完成損害控制或復原作業之次日起一個月內送交調查、處理及改善報告", "通報辦法第 13 條第 2 項；資通安全署常見問題"],
+      ["報告逐款涵蓋施行細則第 12 條七款事項", "發生／知悉／完成時間、影響範圍、損害控制歷程、調查歷程、根因、防範措施、時程及追蹤"],
+      ["需延長者，於期限屆至前取得中央目的事業主管機關同意", "通報辦法第 13 條第 3 項"],
+      ...(重大 ? [["報告並送交主管機關", "資安法第 24 條第 3 項；通報辦法第 13 條第 6 項"],
+                  ["評估委託獨立第三方機構進行鑑識或調查", "資安法第 25 條第 1 項第 2 款"]] : []),
+      ...(pd!=="n" ? [["另依個人資料保護法辦理個資事故之通報及通知", "資安法第 33 條"]] : [])
+    ]]
+  ];
+
+  /* 通報單草稿 */
+  const 待 = t => `<span class="todo">〔${t}〕</span>`;
+  const 單 = [
+    ["一、發生機關", 機關 ? esc(機關) : 待("填入機關名稱")],
+    ["二、發生或知悉時間", `知悉：${民國(知)}`],
+    ["三、狀況之描述", $("#desc").value.trim() ? esc($("#desc").value.trim()).replace(/\n/g,"<br>") : 待("發現經過、受影響系統、目前狀態")],
+    ["四、等級之評估", 級 ? `${級名}${重大?"（重大資通安全事件）":""}` : 待("完成等級初判")],
+    ["五、因應事件所採取之措施", $("#acts").value.trim() ? esc($("#acts").value.trim()).replace(/\n/g,"<br>") : 待("已採取之措施")],
+    ["六、外部支援需求評估", $("#ext").value.trim() ? esc($("#ext").value.trim()).replace(/\n/g,"<br>") : 待("有無支援需求")],
+    ["七、其他相關事項", pd!=="n" ? "本事件" + (pd==="y"?"涉及":"可能涉及") + "個人資料外洩，另依個人資料保護法辦理。" : 待("無則填「無」")]
+  ];
+
+  /* AI 提示詞 */
+  const 提示 = `你是熟悉臺灣資通安全管理法的法令遵循顧問。請依下列事實，協助我完成三件事，並在每一項結論後標示所依據之條號；無法確認之處請明確標示「待查證」，不得推測。
+
+【事實】
+- 機關：${機關 || "（未填）"}；屬資通安全管理法所定特定非公務機關${ci==="y"?"，並經指定為關鍵基礎設施提供者":ci==="u"?"，是否為關鍵基礎設施提供者尚待確認":""}
+- 中央目的事業主管機關：${m ? m[0] : "（尚未確認）"}
+- 知悉時點：${民國(知)}${報 ? `；已於 ${民國(報)} 通報` : "；尚未通報"}
+- 初判等級：${級名}${重大?"（重大資通安全事件）":""}
+- 狀況：${$("#desc").value.trim() || "（未填）"}
+- 已採取措施：${$("#acts").value.trim() || "（未填）"}
+- 是否屬資安法特定非公務機關：${sn==="y"?"是":"否"}；是否為上市櫃公司：${lc==="y"?"是":"否"}
+- 涉及個資外洩：${{y:"是",n:"否",u:"尚不確定"}[pd]}；涉及受託者：${vd==="y"?"是":"否"}
+
+【適用規範（請以全國法規資料庫現行條文為準）】
+- 資通安全管理法（114.09.24 修正公布，114.12.01 施行）第 24 條、第 25 條、第 29 條至第 31 條、第 33 條
+- 資通安全管理法施行細則（115.01.05 修正發布）第 7 條、第 12 條、第 13 條
+- 資通安全事件通報應變及演練辦法（115.01.05 修正發布）第 2 條、第 3 條、第 11 條至第 14 條
+${m ? `- ${m[0]}所管特定非公務機關資通安全管理作業辦法（pcode ${m[1]}）` : ""}
+
+【請協助】
+1. 檢視上述等級初判是否符合通報辦法第 2 條，並指出「輕微／嚴重」「可容忍中斷時間」之判斷尚需哪些事實。
+2. 依通報辦法第 3 條七款，將事實整理為通報單文字，語氣客觀，不作推測或承認責任之陳述。
+3. 依施行細則第 12 條七款，列出調查、處理及改善報告之大綱及每款應蒐集之資料。
+${m ? `另請提醒我向${m[0]}確認其「指定之通報方式」及窗口。` : ""}${pd!=="n" ? "\n另請提醒個人資料保護法之通報程序應分別進行，並列出應確認之事項。" : ""}`;
+
+  /* 組裝輸出 */
+  const 期限摘 = 級 ? 民國(加時(知, 重大?36:72)) : "待判定等級";
+  $("#out").innerHTML = `
+  <div class="card">
+    <h2><span class="n">A</span>時序總覽</h2>
+    <div class="sum">
+      <div><div class="k">事件等級</div><div class="v lvv ${重大?"red":""}">${級名}${重大?"・重大":""}</div></div>
+      <div><div class="k">通報期限</div><div class="v ${(!報&&現在>t通報)?"red":""}">${民國(t通報)}</div></div>
+      <div><div class="k">損害控制期限</div><div class="v">${期限摘}</div></div>
+      <div><div class="k">報告期限</div><div class="v">${民國(t報告,false)}</div></div>
+    </div>
+    <div class="in" style="padding:0">
+      <table id="tl"><thead><tr><th>事項</th><th>期限</th><th>狀態</th><th>依據</th></tr></thead><tbody>
+      ${列.map(r=>`<tr><td>${r[0]}</td><td class="dl">${民國(r[1])}</td><td>${r[2]}</td><td class="src">${r[3]}</td></tr>`).join("")}
+      </tbody></table>
+    </div>
+    <div class="in" style="font-size:12px;color:var(--muted);padding-top:10px">產出時間：${民國(現在)}。「狀態」依產出時間計算，重新按「產出底稿」即更新。</div>
+  </div>
+
+  ${醒.length?`<div class="card"><h2><span class="n">B</span>需要注意</h2><div class="in">${醒.map(a=>`<p class="alert ${a[0]}">${a[1]}</p>`).join("")}</div></div>`:""}
+
+  <div class="card">
+    <h2><span class="n">C</span>通報單草稿（通報辦法第 3 條）</h2>
+    <div class="in draft">${單.map(r=>`<div class="row"><div class="k">${r[0]}</div><div>${r[1]}</div></div>`).join("")}</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">D</span>查核清單</h2>
+    <div class="in"><ul class="chk">${清.map(g=>`<h4>${g[0]}</h4>`+g[1].map(i=>`<li><input type="checkbox" aria-label="${esc(i[0])}"><div>${i[0]}<small>${i[1]}</small></div></li>`).join("")).join("")}</ul></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">E</span>交付 AI 的提示詞</h2>
+    <div class="in">
+      <pre class="prompt" id="pt">${esc(提示)}</pre>
+      <button type="button" class="b noprint" id="cp">複製提示詞</button>
+    </div>
+  </div>
+
+  <div class="card noprint"><div class="in" style="display:flex;gap:8px;flex-wrap:wrap">
+    <button type="button" class="b ghost" onclick="window.print()">列印／存成 PDF</button>
+    ${m?`<a class="b ghost" style="text-decoration:none;display:inline-block" href="${法規}${m[1]}" target="_blank" rel="noopener">開啟${m[0]}作業辦法</a>`:""}
+  </div></div>`;
+
+  $("#cp").addEventListener("click", e => {
+    const b = e.target;
+    const ok = () => { b.textContent = "已複製"; setTimeout(()=>b.textContent="複製提示詞",1400); };
+    try { navigator.clipboard.writeText(提示).then(ok, ()=>{ getSelection().selectAllChildren($("#pt")); }); }
+    catch(_) { getSelection().selectAllChildren($("#pt")); }
+  });
+  if (window.innerWidth < 1000) $("#out").scrollIntoView({behavior:"smooth"});
+}
+
+$("#go").addEventListener("click", 產出);
+$("#now").addEventListener("click", () => {
+  const d = new Date(); d.setSeconds(0,0);
+  const p = n => String(n).padStart(2,"0");
+  $("#known").value = `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+});
+$("#clr").addEventListener("click", () => {
+  $("#f").reset(); 推導();
+  $("#out").innerHTML = `<div class="card"><div class="empty">填入知悉時點並按「產出底稿」</div></div>`;
+});
+推導();
+</script>
+<script>
+/* 左側章節縱軸：依頁面上之章節標題自動建立，隨捲動標示目前位置 */
+(function(){
+  var SEL = "h2.sec, h2.part, .stage > h2, .card > h2";
+  var el = document.createElement("nav"); el.className = "rail"; el.setAttribute("aria-label","章節");
+  document.body.appendChild(el);
+  var heads = [], sig = "";
+  function label(h){
+    var c = h.cloneNode(true);
+    c.querySelectorAll("small,.dl").forEach(function(x){ x.remove(); });
+    var n = c.querySelector(".n"), t = "";
+    if (n){ t = n.textContent.trim() + "　"; n.remove(); }
+    return (t + c.textContent.trim()).replace(/\s+/g," ");
+  }
+  function code(h){ var n = h.querySelector(".n"); return n ? n.textContent.trim() : ""; }
+  function mark(){
+    var cur = -1;
+    for (var i = 0; i < heads.length; i++){ if (heads[i].getBoundingClientRect().top <= 140) cur = i; }
+    if (cur < 0 && heads.length) cur = 0;
+    if (heads.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = heads.length - 1;
+    el.querySelectorAll("a").forEach(function(a,i){ a.classList.toggle("on", i === cur); });
+  }
+  function build(){
+    var hs = [].slice.call(document.querySelectorAll(SEL)).filter(function(h){ return h.offsetParent !== null; });
+    var s = hs.map(label).join("|");
+    if (s !== sig){
+      sig = s; heads = hs;
+      el.innerHTML = hs.map(function(h,i){ var t = label(h).replace(/[&<>"]/g,""); return '<a data-i="'+i+'" title="'+t+'"><i></i><b>'+code(h).replace(/[&<>"]/g,"")+'</b><span>'+t+'</span></a>'; }).join("");
+      var on = hs.length >= 2;
+      el.classList.toggle("on", on); document.body.classList.toggle("hasrail", on);
+    } else { heads = hs; }
+    mark();
+  }
+  el.addEventListener("click", function(e){
+    var a = e.target.closest("a"); if (!a) return;
+    var h = heads[+a.dataset.i]; if (!h) return;
+    window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - 16, behavior: "smooth" });
+  });
+  var tk = 0;
+  window.addEventListener("scroll", function(){ if (!tk){ tk = requestAnimationFrame(function(){ tk = 0; mark(); }); } }, { passive:true });
+  window.addEventListener("resize", mark);
+  var t2 = 0;
+  new MutationObserver(function(m){
+    for (var i = 0; i < m.length; i++){ if (el.contains(m[i].target)) continue; clearTimeout(t2); t2 = setTimeout(build, 120); return; }
+  }).observe(document.body, { childList:true, subtree:true });
+  build();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-2 事件通報對照表｜資通安全管理法法令遵循工具箱</title>
+<style>
+:root{
+  --ink:#16233A;--ink-2:#3A4A64;--muted:#6B7789;
+  --rule:#D3DAE3;--rule-soft:#E6EAF0;--field:#EDF1F6;--paper:#FFFFFF;
+  --seal:#1F5E63;--seal-soft:#E4F0F0;--amber:#8A5A12;--amber-soft:#FBF2E0;
+  --red:#A8322D;--red-soft:#F5E9E8;
+  --serif:"Noto Serif TC","Songti TC","Source Han Serif TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--field);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px}
+header.top{border-bottom:1px solid var(--rule);background:var(--paper)}
+header.top .inner{max-width:1240px;margin:0 auto;padding:22px 20px 18px}
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--muted);margin:0 0 6px}
+.eyebrow a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif);font-size:26px;font-weight:600;margin:0 0 8px;letter-spacing:.02em}
+.sub{margin:0;color:var(--ink-2);font-size:13.5px}
+.usage{max-width:1240px;margin:0 auto;padding:16px 20px 0}
+.usage p{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--ink);padding:14px 18px;margin:0;font-size:13px;line-height:1.9;color:var(--ink-2)}
+.usage p b{color:var(--ink)}
+
+/* 時序條 */
+.clock{max-width:1240px;margin:0 auto;padding:16px 20px 0}
+.clock .box{background:var(--paper);border:1px solid var(--rule);padding:16px 18px}
+.clock h2{font-family:var(--serif);font-size:15px;font-weight:600;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--rule-soft)}
+@media(max-width:900px){.steps{grid-template-columns:1fr}}
+.step{padding:12px 14px;border-right:1px solid var(--rule-soft);position:relative}
+.step:last-child{border-right:0}
+@media(max-width:900px){.step{border-right:0;border-bottom:1px solid var(--rule-soft)}.step:last-child{border-bottom:0}}
+.step .t{font-family:var(--mono);font-size:19px;color:var(--seal);font-weight:600;line-height:1.3}
+.step .t.red{color:var(--red)}
+.step .t small{font-size:12px;font-weight:400;color:var(--muted)}
+.step .w{font-size:13px;font-weight:600;margin:4px 0 2px}
+.step .s{font-size:12px;color:var(--muted);line-height:1.7}
+.step.gov{background:#F7F9FB}
+.step.gov .w{color:var(--muted)}
+
+.cols{display:grid;grid-template-columns:280px 1fr;gap:26px;align-items:start;margin-top:22px}
+@media(max-width:940px){.cols{grid-template-columns:1fr}}
+.side{background:var(--paper);border:1px solid var(--rule);padding:18px 18px 22px;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto}
+@media(max-width:940px){.side{position:static;max-height:none}}
+.side h2{font-family:var(--serif);font-size:15px;font-weight:600;margin:0 0 10px}
+input[type=search]{width:100%;font-family:var(--sans);font-size:14px;padding:9px 10px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:0;-webkit-appearance:none}
+input[type=search]:focus,button:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.count{font-size:12px;color:var(--muted);margin:8px 0 18px;font-family:var(--mono)}
+.count b{color:var(--seal)}
+nav.stages{border-top:1px solid var(--rule-soft);margin-bottom:16px}
+nav.stages a{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule-soft);font-size:13.5px;text-decoration:none;color:var(--ink)}
+nav.stages a:hover{color:var(--seal)}
+nav.stages a .n{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+nav.stages a.dim{color:var(--rule);pointer-events:none}
+.side h3{font-size:12px;letter-spacing:.1em;color:var(--muted);margin:0 0 8px;font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:4px 8px;border:1px solid var(--rule);background:#fff;color:var(--ink-2);cursor:pointer;border-radius:0}
+.chip:hover{border-color:var(--ink-2)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.side .reset{font-size:12.5px;padding:7px 12px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;font-family:var(--sans)}
+main{min-width:0}
+.stage{background:var(--paper);border:1px solid var(--rule);margin-bottom:22px}
+.stage>h2{font-family:var(--serif);font-size:18px;font-weight:600;margin:0;padding:18px 26px 15px;border-bottom:2px solid var(--ink);scroll-margin-top:16px}
+.stage>h2 .n{font-family:var(--mono);font-size:12px;color:var(--seal);margin-right:10px;letter-spacing:.08em}
+.stage>h2 .dl{float:right;font-family:var(--mono);font-size:12px;color:var(--red);font-weight:400;margin-top:4px}
+.rec{padding:20px 26px;border-bottom:1px solid var(--rule-soft);scroll-margin-top:16px}
+.rec:last-child{border-bottom:0}
+.rec:target{background:var(--amber-soft)}
+.rec .top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:8px}
+.rec .src{font-family:var(--serif);font-weight:600;font-size:15.5px}
+.rec .lk{font-family:var(--mono);font-size:11px;color:var(--muted);background:none;border:1px solid var(--rule);padding:2px 7px;cursor:pointer;white-space:nowrap}
+.rec .lk:hover{border-color:var(--ink-2);color:var(--ink)}
+.rec .law{font-size:13.5px;line-height:1.95;color:var(--ink-2);border-left:2px solid var(--rule);padding-left:13px;margin:0 0 9px;white-space:pre-line}
+.rec .who{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--muted);color:var(--muted);margin-left:8px;vertical-align:2px;font-family:var(--sans);font-weight:400}
+.rec .pen{font-size:13px;line-height:1.85;color:var(--ink-2);background:var(--red-soft);padding:8px 12px;margin:0 0 9px;border-left:2px solid var(--red)}
+.rec .pen .k{font-weight:600;color:var(--red);margin-right:6px}
+.rec .evi{font-size:13.5px;margin:0}
+.rec .evi .k{color:var(--muted);font-size:13px}
+details.nt,details.iso{margin-top:9px}
+details summary{cursor:pointer;font-size:12.5px;list-style:none;display:inline-block}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"＋ ";font-family:var(--mono)}
+details[open] summary::before{content:"− "}
+details.nt summary{color:var(--amber);border-bottom:1px dotted var(--amber)}
+details.nt .body{font-size:12.5px;line-height:1.85;color:var(--ink-2);margin-top:8px;padding:9px 12px;background:var(--amber-soft);border-left:3px solid var(--amber)}
+details.iso summary{color:#1F3864;border-bottom:1px dotted #1F3864}
+details.iso .body{font-size:12.5px;line-height:1.85;color:var(--ink-2);margin-top:8px;padding-left:13px;border-left:1px solid var(--rule)}
+details.iso .c{display:block}
+details.iso .c b{font-family:var(--mono);font-weight:600;color:var(--ink);margin-right:8px}
+mark{background:#FCEFA8;color:inherit;padding:0 1px}
+.none{background:var(--paper);border:1px solid var(--rule);padding:50px 26px;text-align:center;color:var(--muted);font-size:14px}
+.foot{margin-top:26px;background:#FAFBFC;border:1px solid var(--rule);padding:20px 26px 24px}
+.foot p{margin:0 0 8px;font-size:12px;color:var(--muted);line-height:1.85}
+.foot p:last-child{margin-bottom:0}
+.foot b{color:var(--ink-2)}
+@media print{
+  body{background:#fff;font-size:10.5pt;font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif}
+  h1,h2,.rec .src{font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif!important}
+  header.top .eyebrow,.side,.lk,.noprint{display:none!important}
+  .cols{display:block}
+  .wrap{max-width:none;padding:0}
+  .stage{border:0;margin-bottom:0}
+  .rec{break-inside:avoid;padding:10px 0}
+  a{text-decoration:none}
+}
+
+/* ── 左側章節縱軸 ── */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;max-height:86vh}
+.rail.on{display:flex}
+.rail::before{content:"";position:absolute;left:5px;top:12px;bottom:12px;width:1px;background:var(--rule)}
+.rail a{position:relative;display:flex;align-items:center;gap:10px;padding:6px 0;text-decoration:none;cursor:pointer}
+.rail a i{flex:0 0 auto;display:block;width:9px;height:9px;margin-left:1px;border:1px solid var(--muted);background:var(--paper);border-radius:50%;position:relative;z-index:1}
+.rail a:hover i{border-color:var(--ink)}
+.rail a.on i{width:11px;height:11px;margin-left:0;background:var(--seal);border-color:var(--seal)}
+.rail a b{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.rail a.on b{color:var(--seal);font-weight:700}
+.rail a:hover b{color:var(--ink)}
+.rail a span{font-size:12px;line-height:1.5;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((100vw - 1240px)/2 - 46px)}
+.rail a:hover span{color:var(--ink)}
+.rail a.on span{color:var(--ink);font-weight:600}
+@media(min-width:1560px){.rail a b{display:none}}
+@media(max-width:1559px){
+  .rail a span{position:absolute;left:100%;margin-left:8px;max-width:none;background:#fff;border:1px solid var(--ink);padding:2px 9px;opacity:0;pointer-events:none;z-index:2}
+  .rail a:hover span{opacity:1}
+}
+@media(min-width:1001px) and (max-width:1420px){body.hasrail{padding-left:84px}}
+@media(max-width:1000px){.rail{display:none!important}}
+@media print{.rail{display:none!important}body.hasrail{padding-left:0}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <p class="eyebrow"><a href="index.html">資通安全管理法法令遵循工具箱</a>　／　文件 B-2　·　ver.1.0</p>
+    <h1>資通安全事件通報對照表</h1>
+    <p class="sub">特定非公務機關自事前準備、分級、通報、損害控制至調查報告之逐項義務，並對照 ISO/IEC 27001:2022</p>
+  </div>
+</header>
+
+<div class="usage">
+  <p><b>使用說明</b>　本表以資通安全事件通報應變及演練辦法（下稱通報辦法）所定程序為主軸，逐項對應資通安全管理法（下稱資安法）及其施行細則之義務。<b>條文照現行條文原文引用</b>，節錄時以「……」標示省略；標示「主管機關義務」者，為受通報機關之作業時限，列出供預估回應節奏，非特定非公務機關之義務。
+    需要依個案產出時序總覽、查核底稿與交付 AI 的提示詞，請使用 <a href="b1-incident.html">B-1 事件通報底稿產生器</a>；中央目的事業主管機關之作業辦法見 <a href="a2-regulations.html#partB">A-2 法規盤點表　乙部</a>。</p>
+</div>
+
+<div class="clock">
+  <div class="box">
+    <h2>時限一覽（自知悉時起算）</h2>
+    <div class="steps">
+      <div class="step"><div class="t red">1<small> 小時</small></div><div class="w">通報</div><div class="s">依中央目的事業主管機關指定之方式通報（通報辦法第 11 條）</div></div>
+      <div class="step gov"><div class="t">8／2<small> 小時</small></div><div class="w">主管機關審核等級</div><div class="s">自接獲通報起算；一、二級 8 小時，重大 2 小時（第 12 條）</div></div>
+      <div class="step"><div class="t">72<small> 小時</small></div><div class="w">一、二級：損害控制或復原</div><div class="s">完成後依指定方式辦理通知（第 13 條第 1 項第 1 款）</div></div>
+      <div class="step"><div class="t red">36<small> 小時</small></div><div class="w">三、四級：損害控制或復原</div><div class="s">重大事件；資通安全長應召開會議（第 13 條第 1 項第 2 款、第 14 條）</div></div>
+      <div class="step"><div class="t">1<small> 個月</small></div><div class="w">調查、處理及改善報告</div><div class="s">完成損害控制或復原後一個月內送交；得經同意延長（第 13 條第 2、3 項）</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="cols">
+
+  <aside class="side noprint">
+    <h2>搜尋與篩選</h2>
+    <input type="search" id="q" placeholder="輸入條號、關鍵字或控制措施編號" aria-label="搜尋">
+    <p class="count" id="count"></p>
+
+    <h3>處理階段</h3>
+    <nav class="stages" id="nav"></nav>
+
+    <h3>ISO/IEC 27001:2022 對照</h3>
+    <div class="chips" id="chips"></div>
+
+    <button class="reset" id="reset">清除全部條件</button>
+  </aside>
+
+  <main id="out"></main>
+</div>
+
+<div class="foot">
+  <p><b>依據版本</b>　資通安全管理法：114 年 9 月 24 日修正公布，114 年 12 月 1 日施行。施行細則、通報辦法、情資分享辦法：115 年 1 月 5 日修正發布。條文於 115 年 11 月 12 日經全國法規資料庫逐條核對。</p>
+  <p><b>對照依據</b>　ISO/IEC 27001:2022 本文條款及附錄 A 控制措施。中文名稱參照 CNS 27001:2023（等同 ISO/IEC 27001:2022）之用語；對照僅表示兩者規範目的相近，不代表通過 ISO 驗證即符合資安法義務，反之亦然。</p>
+  <p><b>雙軌通報</b>　資通安全事件涉及個人資料外洩時，依資安法第 33 條應另依個人資料保護法辦理。兩套程序之通報對象、時限與格式均不相同，應分別進行。</p>
+  <p><b>上市櫃公司</b>　上市、上櫃公司發生資通安全事件，另應評估是否構成重大訊息（上市公司、上櫃公司重大訊息之查證暨公開處理程序第 4 條第 1 項第 26 款），見 <a href="a1-obligations.html?who=b#x-08">A-1 日常義務主表「上市櫃」區</a>。</p>
+  <p><b>適用範圍</b>　本表以特定非公務機關為前提。公務機關之通報義務規定於資安法第 17 條及通報辦法第 6 條至第 10 條，不在本表涵蓋範圍。</p>
+  <p><b>免責聲明</b>　本表為法令遵循參考資料，不構成法律意見。所引法規應以全國法規資料庫（law.moj.gov.tw）現行有效版本為準。具體個案請諮詢法律專業人士。</p>
+  <p>資通安全管理法法令遵循工具箱／文件 B-2　作者：蔡易融　授權：CC BY-NC-SA 4.0　·　工具箱版本 ver.1.0</p>
+</div>
+</div>
+
+<script>
+/* ============================================================
+   ★★★ 要修改條文內容，只需要改下面這一段 ★★★
+   每一筆的欄位：
+     id    ：網址錨點，改動會使舊連結失效，非必要不要改
+     法源  ：條號與括號內的重點提示
+     主體  ：寫 "主管機關義務" 會加註標籤；特定非公務機關之義務寫 ""
+     條文  ：法條原文（可多段，以 \n 分行）
+     罰則  ：違反時之罰則，沒有就寫 ""
+     佐證  ：應備之佐證文件
+     iso   ：ISO/IEC 27001:2022 對照編號，須為下方「ISO」表內之鍵
+     註    ：編輯附註，會收合顯示，不需要就寫 ""
+   ============================================================ */
+
+const ISO = {
+  "5.3":"本文：組織角色、責任及權限",
+  "7.4":"本文：溝通或傳達",
+  "10.2":"本文：不符合事項及矯正措施",
+  "A.5.5":"與權責機關之聯繫",
+  "A.5.7":"威脅情資",
+  "A.5.9":"資訊及其他相關聯資產之清冊",
+  "A.5.19":"供應者關係中之資訊安全",
+  "A.5.20":"於供應者協議中闡明資訊安全",
+  "A.5.22":"供應者服務之監視、審查及變更管理",
+  "A.5.24":"資訊安全事故管理規劃及準備",
+  "A.5.25":"資訊安全事件之評鑑及決策",
+  "A.5.26":"對資訊安全事故之回應",
+  "A.5.27":"由資訊安全事故中學習",
+  "A.5.28":"證據之蒐集",
+  "A.5.29":"中斷期間之資訊安全",
+  "A.5.30":"營運持續之 ICT 備妥性",
+  "A.6.8":"資訊安全事件通報",
+  "A.8.15":"存錄"
+};
+
+const 階段 = [
+  { 代號:"壹", 名:"事前準備：通報及應變機制", key:"prep", 時限:"", 項目:[
+    { id:"prep-01", 法源:"資安法第 24 條第 1 項（訂定通報及應變機制）", 主體:"",
+      條文:"特定非公務機關為因應資通安全事件，應訂定通報及應變機制。",
+      罰則:"資安法第 30 條第 4 款：未依第二十四條第一項規定，訂定資通安全事件之通報及應變機制，或違反第二十四條第四項所定辦法中有關通報及應變機制必要事項之規定。由中央目的事業主管機關令限期改正；屆期未改正者，按次處新臺幣十萬元以上五百萬元以下罰鍰。",
+      佐證:"資通安全事件通報及應變程序書（經資通安全長核定）",
+      iso:["A.5.24","A.6.8"], 註:"" },
+    { id:"prep-02", 法源:"通報辦法第 4 條（通報作業規範）", 主體:"",
+      條文:"各機關應就資通安全事件之通報訂定作業規範，其內容應包括下列事項：\n一、判定事件等級之流程及權責。\n二、事件之影響範圍、損害程度及機關因應能力之評估。\n三、資通安全事件之內部通報流程。\n四、通知受資通安全事件影響之其他機關之方式。\n五、前四款事項之演練。\n六、資通安全事件通報窗口及聯繫方式。\n七、其他資通安全事件通報相關事項。",
+      罰則:"", 佐證:"通報作業規範；事件等級判定流程圖及權責表；通報窗口名冊（含代理人及非上班時間聯繫方式）",
+      iso:["A.5.24","A.5.25","A.6.8","A.5.5","7.4"],
+      註:"第 1 款「判定事件等級之流程及權責」直接決定一小時通報時限能否達成。實務上宜預先指定有權初判等級之人員及代理順序，避免於事件發生時因等級爭議延誤通報。" },
+    { id:"prep-03", 法源:"通報辦法第 5 條（應變作業規範）", 主體:"",
+      條文:"各機關應就資通安全事件之應變訂定作業規範，其內容應包括下列事項：\n一、應變小組之組織。\n二、事件發生前之演練作業。\n三、事件發生時之損害控制機制。\n四、事件發生後之復原、鑑識、調查及改善機制。\n五、事件相關紀錄之保全。\n六、其他資通安全事件應變相關事項。",
+      罰則:"", 佐證:"應變作業規範；應變小組組織表；損害控制及復原程序；鑑識及證據保全程序；日誌保存規範",
+      iso:["A.5.24","A.5.26","A.5.28","A.5.29","A.5.30","A.8.15"], 註:"" },
+    { id:"prep-04", 法源:"施行細則第 9 條第 1 項第 9 款、第 10 款（維護計畫應載事項）", 主體:"",
+      條文:"本法第十三條、第二十條第二項及第二十一條第一項所定資通安全維護計畫，應包括下列事項：……九、資通安全事件通報、應變及演練相關機制。十、資通安全情資之評估及因應機制。……",
+      罰則:"資安法第 30 條第 1 款：未依第二十條第二項或第二十一條第一項規定，訂定、修正或實施資通安全維護計畫，或違反第二十二條所定辦法中有關資通安全維護計畫必要事項之規定。（限期改正，屆期未改正者按次處新臺幣十萬元以上五百萬元以下罰鍰）",
+      佐證:"資通安全維護計畫（第九款、第十款章節）；維護計畫實施情形之執行成果",
+      iso:["A.5.24","A.5.7"], 註:"通報應變機制不僅須獨立訂定（第 24 條第 1 項），亦須納入資通安全維護計畫並於提出實施情形時說明執行成果（施行細則第 9 條第 2 項）。提出期限依各中央目的事業主管機關之作業辦法，見 A-2 法規盤點表乙部。" },
+    { id:"prep-05", 法源:"施行細則第 7 條第 1 項第 5 款、第 8 款（委外：受託者之事件通知）", 主體:"",
+      條文:"各機關依本法第十條規定委外辦理資通系統之建置、維運或資通服務之提供（以下簡稱受託業務），選任及監督受託者時，應注意下列事項：……五、受託者執行受託業務，違反資通安全相關法令或知悉資通安全事件時，應立即通知委託機關及採行之補救措施。……八、委託機關應定期或於知悉受託者發生可能影響受託業務之資通安全事件時，以稽核或其他適當方式確認受託業務之執行情形。",
+      罰則:"", 佐證:"委外契約資通安全條款（含受託者事件通知義務、通知時限、聯繫窗口）；受託者稽核紀錄",
+      iso:["A.5.19","A.5.20","A.5.22"],
+      註:"委託機關之一小時通報時限自其「知悉」時起算。契約若未要求受託者立即通知，將直接壓縮委託機關之應變時間。另依資安法第 25 條第 2 項，與重大事件相關之受託者，亦得為中央目的事業主管機關調查之關係人。" },
+    { id:"prep-06", 法源:"資安法第 10 條第 4 項、通報辦法第 16 條第 2 項、第 17 條（演練）", 主體:"",
+      條文:"資安法第 10 條第 4 項：公務機關及特定非公務機關，應配合主管機關之規劃辦理資通安全演練作業，並視需要導入第三方協力機制；演練內容及其他相關事項，由主管機關定之。\n通報辦法第 16 條第 2 項：特定非公務機關應依前項規定配合中央目的事業主管機關規劃或辦理之資通安全演練作業。但有侵害特定非公務機關之權利或正當利益之虞者，應先經其書面同意，始得為之。\n通報辦法第 17 條：依前條規劃、辦理之各項資通安全演練作業，其參與演練人員於演練過程如知悉公務機關或特定非公務機關之機敏資訊，應予保密。",
+      罰則:"資安法第 30 條第 6 款：違反第二十四條第四項所定辦法中有關通報內容、演練作業之規定。（限期改正，屆期未改正者按次處新臺幣十萬元以上五百萬元以下罰鍰）",
+      佐證:"演練計畫及成果紀錄；書面同意文件（如適用）；演練人員保密切結",
+      iso:["A.5.24","A.5.30"],
+      註:"通報辦法第 16 條第 1 項所列演練項目為：社交工程演練、資通安全事件通報及應變演練、網路攻防演練、情境演練及其他必要之演練。" },
+    { id:"prep-07", 法源:"情資分享辦法第 3 條第 3 項、第 6 條至第 9 條（情資分享）", 主體:"",
+      條文:"第 3 條第 3 項：中央目的事業主管機關與其所管之特定非公務機關應互相進行情資分享。\n第 7 條第 2 項：各機關應就前項分析及整合後發現之新型威脅情資進行分享。\n第 8 條：各機關應就所接收之情資，採取適當之安全維護措施，避免情資內容或依法規規定不得分享之資訊外洩，或遭未經授權之存取或竄改。\n第 9 條第 1 項：各機關進行情資分享，應分別依主管機關或中央目的事業主管機關指定之方式為之。\n第 6 條：各機關應就所接收之情資，辨識其來源之可靠性及時效性，及時進行威脅與弱點分析及研判潛在風險，並採取對應之預防或應變措施。主管機關或中央目的事業主管機關得就指定之情資，通知接收情資之機關回報前項措施。",
+      罰則:"", 佐證:"情資接收及處理紀錄；指定情資之回報紀錄；情資分享紀錄；情資之存取管控紀錄",
+      iso:["A.5.7"], 註:"第 7 條第 2 項所稱「前項分析及整合」，指同條第 1 項依情資之來源、接收日期、可用期間、類別、威脅指標特性及其他適當項目與內部情資進行之關聯分析及整合。" }
+  ]},
+  { 代號:"貳", 名:"事件判定與分級", key:"level", 時限:"", 項目:[
+    { id:"level-01", 法源:"通報辦法第 2 條（資通安全事件之四級）", 主體:"",
+      條文:"資通安全事件分為四級。\n公務機關或特定非公務機關（以下簡稱各機關）發生資通安全事件，有下列情形之一者，為第一級資通安全事件：一、非核心業務資訊遭輕微洩漏。二、非核心業務資訊或非核心資通系統遭輕微竄改。三、非核心資通系統之運作受影響或停頓，於可容忍中斷時間內回復正常運作，造成機關日常作業影響。\n各機關發生資通安全事件，有下列情形之一者，為第二級資通安全事件：一、非核心業務資訊遭嚴重洩漏，或未涉及關鍵基礎設施維運之核心業務資訊遭輕微洩漏。二、非核心業務資訊或非核心資通系統遭嚴重竄改，或未涉及關鍵基礎設施維運之核心業務資訊或核心資通系統遭輕微竄改。三、非核心資通系統之運作受影響或停頓，無法於可容忍中斷時間內回復正常運作，或未涉及關鍵基礎設施維運之核心資通系統之運作受影響或停頓，於可容忍中斷時間內回復正常運作。\n各機關發生資通安全事件，有下列情形之一者，為第三級資通安全事件：一、未涉及關鍵基礎設施維運之核心業務資訊遭嚴重洩漏，或一般公務機密、涉及關鍵基礎設施維運之核心業務資訊遭輕微洩漏。二、未涉及關鍵基礎設施維運之核心業務資訊或核心資通系統遭嚴重竄改，或一般公務機密、涉及關鍵基礎設施維運之核心業務資訊或核心資通系統遭輕微竄改。三、未涉及關鍵基礎設施維運之核心資通系統之運作受影響或停頓，無法於可容忍中斷時間內回復正常運作，或涉及關鍵基礎設施維運之核心資通系統之運作受影響或停頓，於可容忍中斷時間內回復正常運作。\n各機關發生資通安全事件，有下列情形之一者，為第四級資通安全事件：一、一般公務機密、涉及關鍵基礎設施維運之核心業務資訊遭嚴重洩漏，或國家機密遭洩漏。二、一般公務機密、涉及關鍵基礎設施維運之核心業務資訊或核心資通系統遭嚴重竄改，或國家機密遭竄改。三、涉及關鍵基礎設施維運之核心資通系統之運作受影響或停頓，無法於可容忍中斷時間內回復正常運作。",
+      罰則:"", 佐證:"事件等級判定紀錄（含判定依據、判定人、判定時間）",
+      iso:["A.5.25"],
+      註:"四級之判斷軸有三：影響型態（洩漏、竄改、運作受影響或停頓）、標的（非核心；核心但未涉及關鍵基礎設施維運；一般公務機密或涉及關鍵基礎設施維運之核心；國家機密），以及程度（輕微或嚴重；運作類則以能否於可容忍中斷時間內回復區分）。同一事件涉及多種型態者，宜以最高等級通報。「輕微」與「嚴重」法規未設定義，宜於通報作業規範中預先訂定判斷基準。<a href=\"b1-incident.html\">B-1 事件通報底稿產生器</a>內建依此三軸推導等級之輔助問答。" },
+    { id:"level-02", 法源:"施行細則第 13 條（重大資通安全事件之定義）", 主體:"",
+      條文:"本法第十七條第五項、第十八條第二項、第二十四條第三項、第五項、第二十五條第一項與第二項規定所稱重大資通安全事件，指資通安全事件通報應變及演練辦法第二條第四項及第五項規定之第三級及第四級資通安全事件。",
+      罰則:"", 佐證:"—",
+      iso:["A.5.25"],
+      註:"施行細則第 5 條另定義資安法第 4 條第 1 項第 5 款（政府協助民間）所稱之重大資通安全事件，以「對社會公共利益、國民生活或經濟活動有重大影響之虞，且受社會矚目」為要件，與本條係不同脈絡之定義，不宜混用。" },
+    { id:"level-03", 法源:"施行細則第 10 條（核心業務及核心資通系統）", 主體:"",
+      條文:"前條第一項第一款所定核心業務，其範圍如下：一、公務機關依其組織法規，足認該業務為機關核心權責所在。二、各機關維運、提供關鍵基礎設施所必要之業務。三、公營事業與特定財團法人及受政府控制之事業、團體或機構之主要服務或功能。四、各機關依資通安全責任等級分級辦法第四條第一款至第五款或第五條第一款至第五款涉及之業務。\n前條第一項第六款所稱核心資通系統，指支持核心業務持續運作必要之系統，或依資通安全責任等級分級辦法附表九資通系統防護需求分級原則之規定，判定其防護需求等級為高者。",
+      罰則:"", 佐證:"資通系統盤點清冊（標示核心資通系統）；核心業務清單；資通系統防護需求分級紀錄",
+      iso:["A.5.9"],
+      註:"事件發生當下才判斷系統是否屬核心，往往來不及。施行細則第 9 條第 1 項第 6 款已要求維護計畫應盤點資通系統並標示核心資通系統，平時盤點即為分級之前提。" }
+  ]},
+  { 代號:"參", 名:"一小時內通報", key:"notify", 時限:"知悉後 1 小時", 項目:[
+    { id:"notify-01", 法源:"資安法第 24 條第 2 項、通報辦法第 11 條第 1 項（一小時內通報）", 主體:"",
+      條文:"資安法第 24 條第 2 項：特定非公務機關於知悉資通安全事件時，應向中央目的事業主管機關通報。\n通報辦法第 11 條第 1 項：特定非公務機關知悉資通安全事件後，應於一小時內依中央目的事業主管機關指定之方式，進行資通安全事件之通報。",
+      罰則:"資安法第 29 條：特定非公務機關未依第二十四條第二項規定，通報資通安全事件，由中央目的事業主管機關處新臺幣三十萬元以上一千萬元以下罰鍰，並令限期改正；屆期未改正者，按次處罰之。",
+      佐證:"通報紀錄（通報時間、方式、受理編號、通報人）；知悉時點之紀錄",
+      iso:["A.6.8","A.5.5","A.5.26"],
+      註:"本條為資安法罰則最重之單一義務，且<b>不以限期改正為處罰前提</b>（第 29 條為逕處罰鍰並令限期改正）。「知悉」之時點，資通安全署「資通安全管理法常見問題」（版本 1150213）說明：機關發現系統、服務或網路狀態之機密性、完整性或可用性受影響，且符合通報辦法第 2 條各級事件之情形時，即為知悉資通安全事件之時間。宜於通報作業規範中依此訂定認定方式，並保存足以證明知悉時點之紀錄（例如告警時間、內部回報時間）。<br><b>逾時通報</b>　作者見解：資安法第 24 條第 2 項以「於知悉資通安全事件時」通報為義務內容，通報辦法第 11 條第 1 項並定為一小時內；逾一小時始通報者，屬未依第 24 條第 2 項規定通報，有第 29 條之適用。" },
+    { id:"notify-02", 法源:"通報辦法第 3 條（通報內容）", 主體:"",
+      條文:"資通安全事件之通報內容，應包括下列項目：\n一、發生機關。\n二、發生或知悉時間。\n三、狀況之描述。\n四、等級之評估。\n五、因應事件所採取之措施。\n六、外部支援需求評估。\n七、其他相關事項。",
+      罰則:"資安法第 30 條第 6 款：違反第二十四條第四項所定辦法中有關通報內容、演練作業之規定。（限期改正，屆期未改正者按次處新臺幣十萬元以上五百萬元以下罰鍰）",
+      佐證:"通報單（逐項填載七款內容）",
+      iso:["A.6.8","A.5.25"], 註:"" },
+    { id:"notify-03", 法源:"通報辦法第 11 條第 2 項（等級變更之續行通報）", 主體:"",
+      條文:"前項資通安全事件等級變更時，特定非公務機關應依前項規定，續行通報。",
+      罰則:"", 佐證:"續行通報紀錄（變更前後等級、變更理由、續報時間）",
+      iso:["A.6.8","A.5.25"],
+      註:"條文僅稱「依前項規定」續行通報，未另定起算點；本表解讀為自知悉等級變更起一小時內為之，此為編者解讀。等級由一、二級升為三、四級時，損害控制或復原之時限亦隨之由 72 小時縮短為 36 小時，宜同步重新檢視時程。" },
+    { id:"notify-04", 法源:"通報辦法第 11 條第 3 項、第 4 項（替代方式及補行通報）", 主體:"",
+      條文:"特定非公務機關因故無法依第一項規定方式通報者，應於同項規定之時間內依其他適當方式通報，並註記無法依規定方式通報之事由。\n特定非公務機關於無法依第一項規定方式通報之事由解除後，應依該方式補行通報。",
+      罰則:"", 佐證:"替代通報紀錄（方式、時間、無法依規定方式通報之事由）；補行通報紀錄",
+      iso:["A.6.8","A.5.29"],
+      註:"資通安全事件本身即可能使指定之通報平臺無法連線（例如網路中斷、勒索軟體加密）。通報作業規範宜預先備妥離線之替代通報管道（電話、傳真、電子郵件）及中央目的事業主管機關之聯繫窗口。" },
+    { id:"notify-05", 法源:"通報辦法第 12 條（中央目的事業主管機關審核等級）", 主體:"主管機關義務",
+      條文:"中央目的事業主管機關應於特定非公務機關完成資通安全事件之通報後，依下列規定時間完成該資通安全事件等級之審核，並得依審核結果變更其等級：一、通報為第一級或第二級資通安全事件者，於接獲後八小時內。二、通報為重大資通安全事件者，於接獲後二小時內。\n中央目的事業主管機關依前項規定完成資通安全事件之審核後，應於一小時內，依主管機關指定之方式，將審核結果、依據及其他必要資訊送交主管機關。\n主管機關接獲前項資料後，得就資通安全事件之等級進行覆核，並得為等級之變更。但主管機關認有必要，或前項之機關未依規定通知審核結果時，得就該資通安全事件逕為審核，並得為等級之變更。",
+      罰則:"", 佐證:"主管機關審核結果之收受紀錄",
+      iso:["A.5.5"],
+      註:"等級經主管機關變更者，損害控制或復原之時限隨之變動。宜指定專人追蹤審核結果，並備妥支持原判定等級之依據，以便主管機關詢問時說明。" }
+  ]},
+  { 代號:"肆", 名:"損害控制或復原", key:"contain", 時限:"72／36 小時", 項目:[
+    { id:"contain-01", 法源:"通報辦法第 13 條第 1 項（損害控制或復原及通知）", 主體:"",
+      條文:"特定非公務機關知悉資通安全事件後，應依下列規定時間完成損害控制或復原作業，並依中央目的事業主管機關指定之方式辦理通知事宜：\n一、第一級或第二級資通安全事件，於知悉該事件後七十二小時內。\n二、重大資通安全事件，於知悉該事件後三十六小時內。",
+      罰則:"",
+      佐證:"損害控制或復原作業紀錄（措施、完成時間）；完成通知之紀錄",
+      iso:["A.5.26","A.5.29","A.5.30"],
+      註:"時限起算點為「知悉」，與一小時通報相同，並非自通報完成時起算。期間以時計算者即時起算（參照行政程序法第 48 條第 1 項）。<br><b>逾時之罰則對應</b>　作者見解：損害控制或復原作業之時限，屬資安法第 24 條第 4 項授權訂定之通報辦法中有關應變機制之規定，逾時者對應資安法第 30 條第 4 款「違反第二十四條第四項所定辦法中有關通報及應變機制必要事項之規定」，經令限期改正屆期未改正者，按次處新臺幣十萬元以上五百萬元以下罰鍰。此點立法說明、行政院修正草案說明及資通安全署常見問題（版本 1150213）均未明示，司法院裁判書系統查無相關行政裁判，個案以中央目的事業主管機關之認定為準。另中央目的事業主管機關就損害控制或復原作業認有不適當或須改善之情事者，得要求提出說明及調整（通報辦法第 13 條第 5 項）。" },
+    { id:"contain-02", 法源:"通報辦法第 14 條第 3 項（資通安全長召開會議）", 主體:"",
+      條文:"特定非公務機關知悉重大資通安全事件後，其資通安全長應召開會議研商相關事宜，並得請相關機關提供協助。",
+      罰則:"", 佐證:"會議紀錄（召開時間、出席人員、決議事項）；請求協助之紀錄（如有）",
+      iso:["A.5.26","5.3"],
+      註:"資通安全長依資安法第 23 條由代表人、管理人、其他有代表權人或其指派之適當人員擔任。本條未定召開時限，惟重大事件之損害控制時限僅 36 小時，會議宜於知悉後儘速召開。" },
+    { id:"contain-03", 法源:"通報辦法第 14 條第 1 項、第 2 項（主管機關之支援）", 主體:"主管機關義務",
+      條文:"中央目的事業主管機關就所管特定非公務機關執行資通安全事件之通報及應變作業，應視情形提供必要支援或協助。\n主管機關就特定非公務機關執行資通安全事件應變作業，應視情形提供必要支援或協助。",
+      罰則:"", 佐證:"—",
+      iso:["A.5.5"],
+      註:"通報內容第 6 款「外部支援需求評估」即為啟動本條支援之依據，宜於通報時具體填載。" }
+  ]},
+  { 代號:"伍", 名:"調查、處理及改善報告", key:"report", 時限:"1 個月", 項目:[
+    { id:"report-01", 法源:"資安法第 24 條第 3 項、通報辦法第 13 條第 2 項、第 3 項（送交報告）", 主體:"",
+      條文:"資安法第 24 條第 3 項：特定非公務機關應向中央目的事業主管機關提出資通安全事件調查、處理及改善報告；如為重大資通安全事件者，並應送交主管機關。\n通報辦法第 13 條第 2 項：特定非公務機關依前項規定完成損害控制或復原作業後，應持續進行事件之調查及處理，並於一個月內依中央目的事業主管機關指定之方式，送交調查、處理及改善報告。\n同條第 3 項：前項調查、處理及改善報告送交之時限，得經中央目的事業主管機關同意後延長之。",
+      罰則:"資安法第 30 條第 5 款：未依第二十四條第三項規定，向中央目的事業主管機關提出或向主管機關送交資通安全事件之調查、處理及改善報告，或違反第二十四條第四項所定辦法中有關報告提出、送交之規定。（限期改正，屆期未改正者按次處新臺幣十萬元以上五百萬元以下罰鍰）",
+      佐證:"調查、處理及改善報告；送交紀錄；延長期限之同意文件（如有）",
+      iso:["A.5.27","10.2"],
+      註:"一個月之起算，資通安全署「資通安全管理法常見問題」（版本 1150213）說明依行政程序法第 48 條計算，自完成損害控制或復原作業之次日起算：3 月 31 日完成者，4 月 30 日屆滿，5 月 1 日送交即屬逾時；3 月 30 日完成者，亦於 4 月 30 日屆滿。如需延長，應於期限屆至前取得中央目的事業主管機關同意。" },
+    { id:"report-02", 法源:"施行細則第 12 條（報告應包括之事項）", 主體:"",
+      條文:"本法第十七條第三項及第二十四條第三項所定資通安全事件調查、處理及改善報告，應包括下列事項：\n一、事件發生或知悉其發生、完成損害控制或復原作業之時間。\n二、事件影響之範圍及損害評估。\n三、損害控制及復原作業之歷程。\n四、事件調查及處理作業之歷程。\n五、事件根因分析。\n六、為防範類似事件再次發生所採取之管理、技術、人力或資源等層面之措施。\n七、前款措施之預定完成時程及成效追蹤機制。",
+      罰則:"", 佐證:"報告逐款對應表；根因分析紀錄；矯正措施追蹤表",
+      iso:["A.5.27","A.5.28","10.2"], 註:"" },
+    { id:"report-03", 法源:"通報辦法第 13 條第 5 項、第 6 項（說明、調整及重大事件報告之轉送）", 主體:"",
+      條文:"中央目的事業主管機關就第一項之損害控制或復原作業及第二項送交之報告，認有必要，或認有違反法令、不適當或其他須改善之情事者，得要求特定非公務機關提出說明及調整。\n特定非公務機關就重大資通安全事件送交之調查、處理及改善報告，中央目的事業主管機關應於審查後送交主管機關；主管機關就該報告認有必要，或認有違反法令、不適當或其他須改善之情事者，得要求特定非公務機關提出說明及調整。",
+      罰則:"", 佐證:"說明及調整之往來紀錄",
+      iso:["A.5.5","10.2"], 註:"" }
+  ]},
+  { 代號:"陸", 名:"重大事件之調查與公告", key:"major", 時限:"", 項目:[
+    { id:"major-01", 法源:"資安法第 25 條（重大事件之調查）", 主體:"",
+      條文:"中央目的事業主管機關為調查特定非公務機關發生之重大資通安全事件，得依下列程序辦理：一、通知當事人或關係人到場陳述意見。二、通知當事人及關係人提出獨立第三方機構出具之鑑識或調查報告。三、派員、委任或委託其他機關（構）前往當事人及關係人之處所實施必要之檢查。\n前項所定關係人，以該項特定非公務機關委託辦理資通系統之建置、維運或資通服務提供之受託者，且與重大資通安全事件相關者為限。\n當事人或關係人對於中央目的事業主管機關依第一項所為之調查，不得規避、妨礙或拒絕。\n執行調查之人員應出示有關執行職務之證明文件；其未出示者，受調查者得拒絕之。\n第一項第三款受委任或委託之機關（構）對於辦理受任或受託事務所獲悉特定非公務機關之秘密，不得洩漏。",
+      罰則:"資安法第 31 條：違反第二十五條第三項規定，規避、妨礙或拒絕調查者，由中央目的事業主管機關處新臺幣十萬元以上一百萬元以下罰鍰。",
+      佐證:"獨立第三方鑑識或調查報告；到場陳述紀錄；檢查人員之執行職務證明影本",
+      iso:["A.5.28","A.5.5"],
+      註:"第 1 項第 2 款要求「獨立第三方機構」出具之報告。平時宜預先評估並簽訂鑑識服務合約，避免事件發生後才尋覓廠商。委外契約亦宜約定受託者配合調查之義務。" },
+    { id:"major-02", 法源:"資安法第 24 條第 5 項、施行細則第 14 條（公告）", 主體:"主管機關義務",
+      條文:"資安法第 24 條第 5 項：中央目的事業主管機關或主管機關知悉重大資通安全事件時，應提供必要之協助；於適當時機並得公告與事件相關之必要內容及因應措施。\n施行細則第 14 條第 1 項：主管機關、本法第十四條規定收受資通安全維護計畫實施情形之機關或中央目的事業主管機關知悉重大資通安全事件，依本法第十七條第五項、第二十四條第五項規定公告與事件相關之必要內容及因應措施時，應載明事件之發生或知悉其發生之時間、原因、影響程度、控制情形及後續改善措施。\n同條第 2 項：前項與事件相關之必要內容及因應措施，有下列情形之一者，不予公告：一、涉及個人、法人或團體營業上秘密或經營事業有關之資訊，或公開有侵害公務機關、個人、法人或團體之權利或其他正當利益。但法規另有規定，或對公益有必要，或為保護人民生命、身體、健康有必要，或經當事人同意者，不在此限。二、其他依法規規定應秘密、限制或禁止公開之情形。\n同條第 3 項：第一項與事件相關之必要內容及因應措施含有前項不予公告之情形者，得僅就其他部分公告之。",
+      罰則:"", 佐證:"對外溝通聲明稿；不予公告事由之主張文件（如有）",
+      iso:["7.4","A.5.5"],
+      註:"公告屬主管機關之裁量，惟事件之時間軸、原因與改善措施將可能公開。對外聲明宜與通報及報告內容一致；涉及營業秘密者，宜於報告中預先標示並敘明不予公告之事由。" }
+  ]},
+  { 代號:"柒", 名:"罰則與關聯法規", key:"law", 時限:"", 項目:[
+    { id:"law-01", 法源:"資安法第 29 條（未通報）", 主體:"",
+      條文:"特定非公務機關未依第二十四條第二項規定，通報資通安全事件，由中央目的事業主管機關處新臺幣三十萬元以上一千萬元以下罰鍰，並令限期改正；屆期未改正者，按次處罰之。",
+      罰則:"", 佐證:"—", iso:["A.6.8"], 註:"" },
+    { id:"law-02", 法源:"資安法第 30 條第 4 款至第 6 款（通報應變相關之限期改正）", 主體:"",
+      條文:"特定非公務機關有下列情形之一者，由中央目的事業主管機關令限期改正；屆期未改正者，按次處新臺幣十萬元以上五百萬元以下罰鍰：……四、未依第二十四條第一項規定，訂定資通安全事件之通報及應變機制，或違反第二十四條第四項所定辦法中有關通報及應變機制必要事項之規定。五、未依第二十四條第三項規定，向中央目的事業主管機關提出或向主管機關送交資通安全事件之調查、處理及改善報告，或違反第二十四條第四項所定辦法中有關報告提出、送交之規定。六、違反第二十四條第四項所定辦法中有關通報內容、演練作業之規定。",
+      罰則:"", 佐證:"—", iso:["A.5.24","A.5.27"], 註:"" },
+    { id:"law-03", 法源:"資安法第 31 條（規避調查）", 主體:"",
+      條文:"違反第二十五條第三項規定，規避、妨礙或拒絕調查者，由中央目的事業主管機關處新臺幣十萬元以上一百萬元以下罰鍰。",
+      罰則:"", 佐證:"—", iso:["A.5.28"], 註:"" },
+    { id:"law-04", 法源:"資安法第 33 條（涉及個資外洩之雙軌處理）", 主體:"",
+      條文:"本法所定資通安全事件，涉及個人資料外洩時，公務機關及特定非公務機關應另依個人資料保護法及其相關法令規定辦理。",
+      罰則:"", 佐證:"個資事故之通報及通知紀錄（依個資法另行準備）",
+      iso:["A.5.24"],
+      註:"個資法之通報對象、時限與格式規定於各中央目的事業主管機關之個人資料檔案安全維護辦法，與本表之資安通報分屬二套程序，任一遺漏皆獨立構成違失。可使用姊妹工具箱 <a href=\"https://alfred-ij-tsai.github.io/tw-pdpa-gcbpr-toolkit/b1-incident.html\">個資事故應對底稿產生器</a>。" }
+  ]}
+];
+
+/* ============================================================
+   以下為顯示邏輯，一般不需要修改
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let 關鍵字 = "";
+const 選ISO = new Set();
+
+function 全文(r){ return [r.法源,r.條文,r.罰則,r.佐證,r.註,...r.iso,...r.iso.map(k=>ISO[k])].join(" ").toLowerCase(); }
+function 標記(t){
+  t = esc(t);
+  if (!關鍵字) return t;
+  const k = 關鍵字.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return t.replace(new RegExp(k,"gi"), m => `<mark>${m}</mark>`);
+}
+function 命中(r){
+  if (關鍵字 && !全文(r).includes(關鍵字.toLowerCase())) return false;
+  if (選ISO.size && !r.iso.some(k => 選ISO.has(k))) return false;
+  return true;
+}
+function 渲染(){
+  let n = 0, 總 = 0, html = "", nav = "";
+  for (const st of 階段){
+    const hit = st.項目.filter(命中);
+    總 += st.項目.length; n += hit.length;
+    nav += `<a href="#s-${st.key}" class="${hit.length?"":"dim"}"><span>${st.代號}　${st.名}</span><span class="n">${hit.length}</span></a>`;
+    if (!hit.length) continue;
+    html += `<section class="stage"><h2 id="s-${st.key}"><span class="n">${st.代號}</span>${st.名}${st.時限?`<span class="dl">${st.時限}</span>`:""}</h2>`;
+    for (const r of hit){
+      const 開 = 關鍵字 && r.註.toLowerCase().includes(關鍵字.toLowerCase()) ? " open" : "";
+      html += `<article class="rec" id="${r.id}">
+        <div class="top"><span class="src">${標記(r.法源)}${r.主體?`<span class="who">${r.主體}</span>`:""}</span>
+          <button class="lk noprint" data-id="${r.id}">複製連結</button></div>
+        <p class="law">${標記(r.條文)}</p>
+        ${r.罰則?`<p class="pen"><span class="k">罰則</span>${標記(r.罰則)}</p>`:""}
+        <p class="evi"><span class="k">應備佐證　</span>${標記(r.佐證)}</p>
+        ${r.註?`<details class="nt"${開}><summary>編者附註</summary><div class="body">${r.註}</div></details>`:""}
+        <details class="iso"><summary>ISO/IEC 27001:2022 對照（${r.iso.length}）</summary><div class="body">${r.iso.map(k=>`<span class="c"><b>${k}</b>${ISO[k]}</span>`).join("")}</div></details>
+      </article>`;
+    }
+    html += `</section>`;
+  }
+  $("#out").innerHTML = html || `<div class="none">沒有符合條件的項目</div>`;
+  $("#nav").innerHTML = nav;
+  $("#count").innerHTML = `顯示 <b>${n}</b> / ${總} 項`;
+}
+$("#chips").innerHTML = Object.keys(ISO).map(k => `<button class="chip" data-k="${k}" title="${ISO[k]}">${k}</button>`).join("");
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  const k = b.dataset.k;
+  選ISO.has(k) ? 選ISO.delete(k) : 選ISO.add(k);
+  b.classList.toggle("on");
+  渲染();
+});
+$("#q").addEventListener("input", e => { 關鍵字 = e.target.value.trim(); 渲染(); });
+$("#reset").addEventListener("click", () => {
+  關鍵字 = ""; $("#q").value = ""; 選ISO.clear();
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("on"));
+  渲染();
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest(".lk"); if (!b) return;
+  const url = location.href.split("#")[0] + "#" + b.dataset.id;
+  const 原 = b.textContent;
+  const done = () => { b.textContent = "已複製"; setTimeout(()=> b.textContent = 原, 1400); };
+  try { navigator.clipboard.writeText(url).then(done, () => { location.hash = b.dataset.id; }); }
+  catch(_) { location.hash = b.dataset.id; }
+});
+window.addEventListener("beforeprint", () => document.querySelectorAll("details").forEach(d => d.open = true));
+渲染();
+if (location.hash){ const el = document.querySelector(location.hash); if (el) el.scrollIntoView(); }
+</script>
+<script>
+/* 左側章節縱軸：依頁面上之章節標題自動建立，隨捲動標示目前位置 */
+(function(){
+  var SEL = "h2.sec, h2.part, .stage > h2, .card > h2";
+  var el = document.createElement("nav"); el.className = "rail"; el.setAttribute("aria-label","章節");
+  document.body.appendChild(el);
+  var heads = [], sig = "";
+  function label(h){
+    var c = h.cloneNode(true);
+    c.querySelectorAll("small,.dl").forEach(function(x){ x.remove(); });
+    var n = c.querySelector(".n"), t = "";
+    if (n){ t = n.textContent.trim() + "　"; n.remove(); }
+    return (t + c.textContent.trim()).replace(/\s+/g," ");
+  }
+  function code(h){ var n = h.querySelector(".n"); return n ? n.textContent.trim() : ""; }
+  function mark(){
+    var cur = -1;
+    for (var i = 0; i < heads.length; i++){ if (heads[i].getBoundingClientRect().top <= 140) cur = i; }
+    if (cur < 0 && heads.length) cur = 0;
+    if (heads.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = heads.length - 1;
+    el.querySelectorAll("a").forEach(function(a,i){ a.classList.toggle("on", i === cur); });
+  }
+  function build(){
+    var hs = [].slice.call(document.querySelectorAll(SEL)).filter(function(h){ return h.offsetParent !== null; });
+    var s = hs.map(label).join("|");
+    if (s !== sig){
+      sig = s; heads = hs;
+      el.innerHTML = hs.map(function(h,i){ var t = label(h).replace(/[&<>"]/g,""); return '<a data-i="'+i+'" title="'+t+'"><i></i><b>'+code(h).replace(/[&<>"]/g,"")+'</b><span>'+t+'</span></a>'; }).join("");
+      var on = hs.length >= 2;
+      el.classList.toggle("on", on); document.body.classList.toggle("hasrail", on);
+    } else { heads = hs; }
+    mark();
+  }
+  el.addEventListener("click", function(e){
+    var a = e.target.closest("a"); if (!a) return;
+    var h = heads[+a.dataset.i]; if (!h) return;
+    window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - 16, behavior: "smooth" });
+  });
+  var tk = 0;
+  window.addEventListener("scroll", function(){ if (!tk){ tk = requestAnimationFrame(function(){ tk = 0; mark(); }); } }, { passive:true });
+  window.addEventListener("resize", mark);
+  var t2 = 0;
+  new MutationObserver(function(m){
+    for (var i = 0; i < m.length; i++){ if (el.contains(m[i].target)) continue; clearTimeout(t2); t2 = setTimeout(build, 120); return; }
+  }).observe(document.body, { childList:true, subtree:true });
+  build();
+})();
+</script>
+</body>
+</html>

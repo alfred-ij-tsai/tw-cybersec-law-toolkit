@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>資通安全管理法法令遵循工具箱</title>
+<style>
+:root{
+  --ink:#16233A;--ink-2:#3A4A64;--muted:#6B7789;
+  --rule:#D3DAE3;--rule-soft:#E6EAF0;--field:#EDF1F6;--paper:#FFFFFF;
+  --seal:#1F5E63;--seal-soft:#E4F0F0;--amber:#8A5A12;--amber-soft:#FBF2E0;--red:#A8322D;
+  --serif:"Noto Serif TC","Songti TC","Source Han Serif TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--field);font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+.hero{background:var(--paper);border-bottom:1px solid var(--rule)}
+.hero .inner{max-width:1080px;margin:0 auto;padding:52px 20px 44px}
+.hero .eyebrow{font-size:12px;letter-spacing:.24em;color:var(--seal);margin:0 0 16px}
+.hero h1{font-family:var(--serif);font-size:36px;line-height:1.4;font-weight:600;margin:0 0 6px;letter-spacing:.01em}
+@media(max-width:620px){.hero h1{font-size:27px}}
+.hero h1 .en{display:block;font-size:15px;letter-spacing:.06em;color:var(--muted);font-weight:400;margin-top:10px;font-family:var(--sans)}
+.hero .cols{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:end}
+.hero .lede{font-size:16px;color:var(--ink-2);margin:0}
+@media(max-width:900px){.hero .cols{grid-template-columns:1fr;gap:20px}}
+.hero .by{margin:26px 0 0;font-size:13px;color:var(--muted);border-top:1px solid var(--rule-soft);padding-top:16px}
+.hero .by b{color:var(--ink);font-weight:600}
+.hero .by a{color:var(--muted)}
+h2.sec{font-family:var(--serif);font-size:20px;font-weight:600;margin:48px 0 6px;padding-bottom:9px;border-bottom:2px solid var(--ink)}
+h2.sec .n{font-family:var(--mono);font-size:12px;color:var(--seal);margin-right:12px;letter-spacing:.08em}
+p.seclede{font-size:14px;color:var(--muted);margin:0 0 20px}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.paths{grid-template-columns:1fr}}
+.path{background:var(--paper);border:1px solid var(--rule);padding:22px 22px 20px;display:flex;flex-direction:column}
+.path .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--seal);margin-bottom:10px}
+.path h3{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 8px}
+.path p{font-size:13.5px;color:var(--ink-2);margin:0 0 16px;flex:1}
+.path h3{margin-bottom:14px!important}
+.pd{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--rule-soft)}
+.pd .no{font-family:var(--mono);font-size:13px;color:var(--seal);padding-top:2px}
+.pd h4{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:0 0 4px}
+.pd p{font-size:13px;color:var(--muted);margin:0 0 10px;flex:none}
+.pd.main h4{font-size:16.5px}
+.pd.main p{color:var(--ink-2)}
+.path .go.ghost{background:#fff;color:var(--ink);padding:6px 13px;font-size:13px}
+.path .go{display:inline-block;font-size:13.5px;padding:9px 15px;border:1px solid var(--ink);background:var(--ink);color:#fff;text-decoration:none;align-self:flex-start}
+.path .go:hover{opacity:.86}
+.path .also{font-size:12.5px;color:var(--muted);margin:auto 0 0;padding-top:12px;border-top:1px solid var(--rule-soft);flex:none}
+.path .also a{color:var(--muted)}
+.docs{background:var(--paper);border:1px solid var(--rule)}
+.doc{display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:baseline;padding:16px 22px;border-bottom:1px solid var(--rule-soft)}
+.doc:last-child{border-bottom:0}
+@media(max-width:620px){.doc{grid-template-columns:44px 1fr;gap:10px}.doc .act{grid-column:2}}
+.doc .no{font-family:var(--mono);font-size:13px;color:var(--seal)}
+.doc h3{font-family:var(--serif);font-size:16px;font-weight:600;margin:0 0 3px}
+.doc p{font-size:13px;color:var(--muted);margin:0}
+.doc .act a{font-size:13px;padding:6px 12px;border:1px solid var(--ink);text-decoration:none;white-space:nowrap}
+.key{display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper);border:1px solid var(--rule)}
+@media(max-width:760px){.key{grid-template-columns:1fr 1fr}}
+.key div{padding:16px 18px;border-right:1px solid var(--rule-soft)}
+.key div:last-child{border-right:0}
+.key .t{font-family:var(--mono);font-size:24px;font-weight:600;color:var(--seal);line-height:1.2}
+.key .t.red{color:var(--red)}
+.key .t small{font-size:13px;font-weight:400;color:var(--muted)}
+.key .w{font-size:13px;color:var(--ink-2);margin-top:4px}
+.box{background:var(--paper);border:1px solid var(--rule);padding:18px 22px;font-size:13.5px;color:var(--ink-2)}
+.box p{margin:0 0 10px}
+.box p:last-child{margin:0}
+.box b{color:var(--ink)}
+p.foot{font-size:12px;color:var(--muted);margin:40px 0 0;line-height:1.9}
+
+/* ── 左側章節縱軸 ── */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;max-height:86vh}
+.rail.on{display:flex}
+.rail::before{content:"";position:absolute;left:5px;top:12px;bottom:12px;width:1px;background:var(--rule)}
+.rail a{position:relative;display:flex;align-items:center;gap:10px;padding:6px 0;text-decoration:none;cursor:pointer}
+.rail a i{flex:0 0 auto;display:block;width:9px;height:9px;margin-left:1px;border:1px solid var(--muted);background:var(--paper);border-radius:50%;position:relative;z-index:1}
+.rail a:hover i{border-color:var(--ink)}
+.rail a.on i{width:11px;height:11px;margin-left:0;background:var(--seal);border-color:var(--seal)}
+.rail a b{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.rail a.on b{color:var(--seal);font-weight:700}
+.rail a:hover b{color:var(--ink)}
+.rail a span{font-size:12px;line-height:1.5;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((100vw - 1240px)/2 - 46px)}
+.rail a:hover span{color:var(--ink)}
+.rail a.on span{color:var(--ink);font-weight:600}
+@media(min-width:1560px){.rail a b{display:none}}
+@media(max-width:1559px){
+  .rail a span{position:absolute;left:100%;margin-left:8px;max-width:none;background:#fff;border:1px solid var(--ink);padding:2px 9px;opacity:0;pointer-events:none;z-index:2}
+  .rail a:hover span{opacity:1}
+}
+@media(min-width:1001px) and (max-width:1420px){body.hasrail{padding-left:84px}}
+@media(max-width:1000px){.rail{display:none!important}}
+@media print{.rail{display:none!important}body.hasrail{padding-left:0}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="inner">
+    <p class="eyebrow">TAIWAN CYBER SECURITY MANAGEMENT ACT · COMPLIANCE TOOLKIT · ver.1.0</p>
+    <div class="cols">
+    <h1>資通安全管理法<br>法令遵循工具箱<span class="en">Cyber Security Management Act Compliance Toolkit — ISO/IEC 27001:2022 Mapped</span></h1>
+    <p class="lede">為資安法之特定非公務機關及上市上櫃公司之法務、法令遵循及資安人員設計，聚焦三件事：日常應遵循之義務、資通安全事件發生時之通報與揭露，以及委外契約之資安條款審閱。以 114 年 12 月 1 日施行之修正後資安法、115 年 1 月修正之子法及最新版上市上櫃公司資通安全管控指引為準，逐項對照 ISO/IEC 27001:2022。</p>
+    </div>
+    <p class="by">作者　<b>蔡易融</b>　｜　<a href="https://www.linkedin.com/in/ijungtsai" target="_blank" rel="noopener">LinkedIn</a>　·　<a href="https://www.threads.com/@irongtsay" target="_blank" rel="noopener">Threads</a>　·　<a href="https://github.com/alfred-ij-tsai/tw-cybersec-law-toolkit" target="_blank" rel="noopener">GitHub 原始文件庫</a>　｜　授權　CC BY-NC-SA 4.0　·　姊妹工具箱　<a href="https://alfred-ij-tsai.github.io/tw-pdpa-gcbpr-toolkit/">個人資料保護法法令遵循工具箱</a></p>
+  </div>
+</section>
+
+<div class="wrap">
+
+<h2 class="sec"><span class="n">01</span>三條路徑與文件</h2>
+<p class="seclede">依目前處境選擇入口。三條路徑對特定非公務機關及上市上櫃公司均適用，進入各頁面後於頁面上方選擇身分；各頁面之選擇互不影響。</p>
+<div class="paths">
+  <div class="path">
+    <div class="tag">路徑 A　日常法令遵循</div>
+    <h3>我要確認平時該做什麼</h3>
+    <div class="pd main"><div class="no">A-1</div><div><h4>日常義務主表</h4><p>通則及 13 款 36 項，另有上市櫃事項 9 項；整合資安法、子法、責任等級分級辦法附表及上市櫃規範，可依身分、等級、頻率、ISO 對照篩選。</p><a class="go" href="a1-obligations.html">開啟日常義務主表</a></div></div>
+    <div class="pd"><div class="no">A-2</div><div><h4>法規盤點表</h4><p>適用對象定義；資安法及 6 部子法；24 部中央目的事業主管機關作業辦法之期限比較；上市櫃公司適用之規範。</p><a class="go ghost" href="a2-regulations.html">開啟</a></div></div>
+  </div>
+  <div class="path">
+    <div class="tag">路徑 B　事件通報</div>
+    <h3>發生了資通安全事件</h3>
+    <div class="pd main"><div class="no">B-1</div><div><h4>事件通報底稿產生器</h4><p>填入知悉時點與事件情況，產出通報時序、通報單草稿、查核清單與 AI 提示詞；上市櫃公司並提示重大訊息之評估。可列印。</p><a class="go" href="b1-incident.html">開啟通報底稿產生器</a></div></div>
+    <div class="pd"><div class="no">B-2</div><div><h4>事件通報對照表</h4><p>7 階段、27 項義務，條文原文、罰則、應備佐證、ISO/IEC 27001:2022 對照，可搜尋與篩選。</p><a class="go ghost" href="b2-reporting.html">開啟</a></div></div>
+  </div>
+  <div class="path">
+    <div class="tag">路徑 C　契約審閱</div>
+    <h3>我要審閱委外契約的資安條款</h3>
+    <div class="pd main"><div class="no">C-1</div><div><h4>契約審閱工具</h4><p>29 項檢視事項，依契約情境篩選，分法定事項、履行所需、指引建議與強化四層；每項附法源、條款強弱之特徵及受託方之準備事項，產出缺口清單與 AI 提示詞。委託方與受託方立場均可使用。</p><a class="go" href="c1-contract.html">開啟契約審閱工具</a></div></div>
+    <p class="also">委外義務之條文見 <a href="a1-obligations.html#s-k11">A-1 主表第 11 款</a></p>
+  </div>
+</div>
+
+<h2 class="sec"><span class="n">02</span>四個時限</h2>
+<p class="seclede">資安法之時限，適用於特定非公務機關，均自「知悉」時起算。未通報者，處新臺幣 30 萬元以上 1,000 萬元以下罰鍰（資安法第 29 條）。</p>
+<div class="key">
+  <div><div class="t red">1<small> 小時</small></div><div class="w">通報中央目的事業主管機關</div></div>
+  <div><div class="t">72<small> 小時</small></div><div class="w">一、二級事件完成損害控制或復原</div></div>
+  <div><div class="t red">36<small> 小時</small></div><div class="w">三、四級（重大）事件完成損害控制或復原</div></div>
+  <div><div class="t">1<small> 個月</small></div><div class="w">送交調查、處理及改善報告</div></div>
+</div>
+
+<h2 class="sec"><span class="n">03</span>使用前須知</h2>
+<div class="box">
+  <p><b>適用範圍。</b>本工具箱涵蓋資安法之特定非公務機關，及上市上櫃公司。公務機關之義務規定於資安法第二章，不在涵蓋範圍。</p>
+  <p><b>上市櫃指引之性質。</b>上市上櫃公司資通安全管控指引為證交所及櫃買中心訂定，其第 44 條載明公司可衡諸產業特性、規模大小及資安風險適度採行；內控準則第 9 條、第 9 條之 1 則為依證券交易法訂定之法規命令。各頁面以不同標籤區分。</p>
+  <p><b>授權依據之過渡。</b>截至查證日，24 部中央目的事業主管機關作業辦法中，僅經濟部、中央銀行、財政部三部已改依新法第 22 條；其餘仍援引修正前條次。使用前請至全國法規資料庫確認是否已修正。</p>
+  <p><b>個資雙軌。</b>資通安全事件涉及個人資料外洩時，應另依個人資料保護法辦理（資安法第 33 條）。請併用 <a href="https://alfred-ij-tsai.github.io/tw-pdpa-gcbpr-toolkit/b1-incident.html">個資事故應對底稿產生器</a>。</p>
+  <p><b>不上傳資料。</b>所有頁面均為單一檔案，下載後可離線使用；產生器之填答僅在瀏覽器中運算，不儲存、不上傳。</p>
+</div>
+
+<p class="foot">本工具箱為法令遵循參考資料，不構成法律意見。所引法規應以全國法規資料庫（law.moj.gov.tw）現行有效版本為準，具體個案請諮詢法律專業人士。條文查證日：115 年 11 月 12 日。<br>
+ISO/IEC 27001:2022 控制措施之中文名稱參照 CNS 27001:2023 之用語。</p>
+
+</div>
+<script>
+/* 左側章節縱軸：依頁面上之章節標題自動建立，隨捲動標示目前位置 */
+(function(){
+  var SEL = "h2.sec, h2.part, .stage > h2, .card > h2";
+  var el = document.createElement("nav"); el.className = "rail"; el.setAttribute("aria-label","章節");
+  document.body.appendChild(el);
+  var heads = [], sig = "";
+  function label(h){
+    var c = h.cloneNode(true);
+    c.querySelectorAll("small,.dl").forEach(function(x){ x.remove(); });
+    var n = c.querySelector(".n"), t = "";
+    if (n){ t = n.textContent.trim() + "　"; n.remove(); }
+    return (t + c.textContent.trim()).replace(/\s+/g," ");
+  }
+  function code(h){ var n = h.querySelector(".n"); return n ? n.textContent.trim() : ""; }
+  function mark(){
+    var cur = -1;
+    for (var i = 0; i < heads.length; i++){ if (heads[i].getBoundingClientRect().top <= 140) cur = i; }
+    if (cur < 0 && heads.length) cur = 0;
+    if (heads.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = heads.length - 1;
+    el.querySelectorAll("a").forEach(function(a,i){ a.classList.toggle("on", i === cur); });
+  }
+  function build(){
+    var hs = [].slice.call(document.querySelectorAll(SEL)).filter(function(h){ return h.offsetParent !== null; });
+    var s = hs.map(label).join("|");
+    if (s !== sig){
+      sig = s; heads = hs;
+      el.innerHTML = hs.map(function(h,i){ var t = label(h).replace(/[&<>"]/g,""); return '<a data-i="'+i+'" title="'+t+'"><i></i><b>'+code(h).replace(/[&<>"]/g,"")+'</b><span>'+t+'</span></a>'; }).join("");
+      var on = hs.length >= 2;
+      el.classList.toggle("on", on); document.body.classList.toggle("hasrail", on);
+    } else { heads = hs; }
+    mark();
+  }
+  el.addEventListener("click", function(e){
+    var a = e.target.closest("a"); if (!a) return;
+    var h = heads[+a.dataset.i]; if (!h) return;
+    window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - 16, behavior: "smooth" });
+  });
+  var tk = 0;
+  window.addEventListener("scroll", function(){ if (!tk){ tk = requestAnimationFrame(function(){ tk = 0; mark(); }); } }, { passive:true });
+  window.addEventListener("resize", mark);
+  var t2 = 0;
+  new MutationObserver(function(m){
+    for (var i = 0; i < m.length; i++){ if (el.contains(m[i].target)) continue; clearTimeout(t2); t2 = setTimeout(build, 120); return; }
+  }).observe(document.body, { childList:true, subtree:true });
+  build();
+})();
+</script>
+</body>
+</html>

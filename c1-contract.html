@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C-1 契約審閱工具｜資通安全管理法法令遵循工具箱</title>
+<style>
+:root{
+  --ink:#16233A;--ink-2:#3A4A64;--muted:#6B7789;
+  --rule:#D3DAE3;--rule-soft:#E6EAF0;--field:#EDF1F6;--paper:#FFFFFF;
+  --seal:#1F5E63;--seal-soft:#E4F0F0;--amber:#8A5A12;--amber-soft:#FBF2E0;
+  --red:#A8322D;--red-soft:#F5E9E8;--ok:#2F6B3A;--ok-soft:#E8F2EA;--pur:#5B3F8C;--pur-soft:#F1ECF8;
+  --serif:"Noto Serif TC","Songti TC","Source Han Serif TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--field);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+header.top{border-bottom:1px solid var(--rule);background:var(--paper)}
+header.top .inner{max-width:1240px;margin:0 auto;padding:22px 20px 18px}
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--muted);margin:0 0 6px}
+.eyebrow a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif);font-size:26px;font-weight:600;margin:0 0 8px;letter-spacing:.02em}
+.sub{margin:0;color:var(--ink-2);font-size:13.5px}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 20px 80px}
+.usage{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--ink);padding:14px 18px;margin:0 0 20px;font-size:13px;line-height:1.9;color:var(--ink-2)}
+.usage b{color:var(--ink)}
+.cols{display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}}
+.form{background:var(--paper);border:1px solid var(--rule);padding:4px 22px 22px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+@media(max-width:1000px){.form{position:static;max-height:none}}
+fieldset{border:0;border-bottom:1px solid var(--rule-soft);margin:0;padding:16px 0}
+fieldset:last-of-type{border-bottom:0}
+legend{font-family:var(--serif);font-weight:600;font-size:15.5px;padding:0;margin-bottom:8px;float:left;width:100%}
+legend .n{font-family:var(--mono);font-size:11.5px;color:var(--seal);margin-right:8px}
+legend+*{clear:both}
+label.f{display:block;font-size:13px;color:var(--ink-2);margin:10px 0 4px}
+select{width:100%;font-family:var(--sans);font-size:14px;padding:8px 10px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:0}
+select:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.radios{display:flex;flex-wrap:wrap;gap:6px}
+.radios label{font-size:13px;border:1px solid var(--rule);padding:5px 10px;cursor:pointer;background:#fff;display:flex;gap:6px;align-items:center}
+.radios input{margin:0}
+.radios label:has(input:checked){border-color:var(--ink);background:var(--ink);color:#fff}
+.cks label{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;padding:4px 0;cursor:pointer}
+.cks input{margin-top:5px}
+.hint{font-size:12px;color:var(--muted);line-height:1.7;margin:6px 0 0}
+.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+button.b,a.b{font-family:var(--sans);font-size:13.5px;padding:9px 16px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;text-decoration:none}
+button.b.ghost{background:#fff;color:var(--ink)}
+.out{min-width:0}
+.card{background:var(--paper);border:1px solid var(--rule);margin-bottom:18px}
+.card>h2{font-family:var(--serif);font-size:17px;font-weight:600;margin:0;padding:15px 22px 12px;border-bottom:2px solid var(--ink)}
+.card>h2 .n{font-family:var(--mono);font-size:11.5px;color:var(--seal);margin-right:10px}
+.card>h2 small{font-family:var(--sans);font-weight:400;font-size:12.5px;color:var(--muted);margin-left:8px}
+.card .in{padding:16px 22px}
+.sum{display:grid;grid-template-columns:repeat(4,1fr)}
+@media(max-width:700px){.sum{grid-template-columns:1fr 1fr}}
+.sum>div{padding:12px 16px;border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
+.sum .k{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.sum .v{font-family:var(--mono);font-weight:600;font-size:20px;margin-top:2px}
+.sum .v small{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted)}
+.sum .v.red{color:var(--red)}.sum .v.ok{color:var(--ok)}
+.tag{display:inline-block;font-size:11px;padding:0 7px;border:1px solid var(--rule);line-height:1.8;white-space:nowrap}
+.t-must{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+.t-need{border-color:var(--seal);color:var(--seal);background:var(--seal-soft)}
+.t-plus{border-color:var(--muted);color:var(--ink-2)}
+.t-guide{border-color:var(--pur);color:var(--pur);background:var(--pur-soft)}
+.t-ref{border-color:var(--rule);color:var(--muted)}
+.it{padding:16px 22px;border-bottom:1px solid var(--rule-soft)}
+.it:last-child{border-bottom:0}
+.it .hd{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:4px}
+.it .nm{font-family:var(--serif);font-weight:600;font-size:15.5px}
+.it .src{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+.it .why{font-size:13.5px;color:var(--ink-2);margin:0 0 8px}
+.lv3{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule);margin:0 0 10px}
+@media(max-width:760px){.lv3{grid-template-columns:1fr}}
+.lv3 div{padding:8px 10px;font-size:12.5px;line-height:1.7;color:var(--ink-2);border-right:1px solid var(--rule-soft)}
+.lv3 div:last-child{border-right:0}
+.lv3 b{display:block;font-size:11.5px;letter-spacing:.08em;margin-bottom:2px}
+.lv3 .w b{color:var(--red)}.lv3 .o b{color:var(--seal)}.lv3 .s b{color:var(--ok)}
+.it .vd{font-size:13px;line-height:1.85;color:var(--ink-2);background:#F7F9FB;border-left:2px solid var(--seal);padding:8px 12px;margin:0 0 10px}
+.it .pcc{font-size:12px;color:var(--muted);margin:0 0 8px}
+.it .radios label{font-size:12.5px;padding:3px 9px}
+.it.g0{box-shadow:inset 3px 0 0 var(--red)}
+.it.g1{box-shadow:inset 3px 0 0 var(--amber)}
+.it.g2,.it.g3{box-shadow:inset 3px 0 0 var(--ok)}
+.gap{font-size:13.5px;line-height:1.85;padding:9px 0;border-bottom:1px solid var(--rule-soft)}
+.gap:last-child{border-bottom:0}
+.gap small{display:block;color:var(--muted);font-size:12.5px}
+.empty{padding:50px 22px;text-align:center;color:var(--muted);font-size:14px}
+pre.prompt{white-space:pre-wrap;font-family:var(--mono);font-size:12px;line-height:1.75;background:#F7F9FB;border:1px solid var(--rule);padding:14px;margin:0 0 10px;max-height:420px;overflow:auto}
+.foot{margin-top:26px;background:#FAFBFC;border:1px solid var(--rule);padding:20px 26px 24px}
+.foot p{margin:0 0 8px;font-size:12px;color:var(--muted);line-height:1.85}
+.foot p:last-child{margin-bottom:0}
+.foot b{color:var(--ink-2)}
+@media print{
+  body{background:#fff;font-size:10.5pt;font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif}
+  h1,.card>h2,.it .nm{font-family:"Times New Roman","標楷體","DFKai-SB","BiauKai",serif!important}
+  header.top .eyebrow,.form,.noprint{display:none!important}
+  .cols{display:block}.wrap{padding:0}
+  .card{border:0}.it{break-inside:avoid}
+  pre.prompt{max-height:none}
+}
+
+/* ── 左側章節縱軸 ── */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;max-height:86vh}
+.rail.on{display:flex}
+.rail::before{content:"";position:absolute;left:5px;top:12px;bottom:12px;width:1px;background:var(--rule)}
+.rail a{position:relative;display:flex;align-items:center;gap:10px;padding:6px 0;text-decoration:none;cursor:pointer}
+.rail a i{flex:0 0 auto;display:block;width:9px;height:9px;margin-left:1px;border:1px solid var(--muted);background:var(--paper);border-radius:50%;position:relative;z-index:1}
+.rail a:hover i{border-color:var(--ink)}
+.rail a.on i{width:11px;height:11px;margin-left:0;background:var(--seal);border-color:var(--seal)}
+.rail a b{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.rail a.on b{color:var(--seal);font-weight:700}
+.rail a:hover b{color:var(--ink)}
+.rail a span{font-size:12px;line-height:1.5;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((100vw - 1240px)/2 - 46px)}
+.rail a:hover span{color:var(--ink)}
+.rail a.on span{color:var(--ink);font-weight:600}
+@media(min-width:1560px){.rail a b{display:none}}
+@media(max-width:1559px){
+  .rail a span{position:absolute;left:100%;margin-left:8px;max-width:none;background:#fff;border:1px solid var(--ink);padding:2px 9px;opacity:0;pointer-events:none;z-index:2}
+  .rail a:hover span{opacity:1}
+}
+@media(min-width:1001px) and (max-width:1420px){body.hasrail{padding-left:84px}}
+@media(max-width:1000px){.rail{display:none!important}}
+@media print{.rail{display:none!important}body.hasrail{padding-left:0}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <p class="eyebrow"><a href="index.html">資通安全管理法法令遵循工具箱</a>　／　文件 C-1　·　ver.1.0</p>
+    <h1>契約審閱工具</h1>
+    <p class="sub">把資安法與上市櫃規範之義務轉為契約應有之安排，檢視委外契約之資安條款是否足以支撐法定義務之履行</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<p class="usage"><b>使用說明</b>　先於左側選擇立場與契約情境，右側即列出該情境下契約應檢視之事項。每一事項標示其層級：<span class="tag t-must">法定事項</span> 為資安法及施行細則明定委外時應辦理或應注意者；<span class="tag t-need">履行所需</span> 為法規未要求載入契約，惟未約定將難以履行自身法定義務者，屬作者建議；<span class="tag t-guide">指引建議</span> 為上市上櫃公司資通安全管控指引所載；<span class="tag t-plus">強化</span> 為提高契約保障之安排。逐項勾選契約現況後，下方即產出缺口清單及可交付 AI 逐條比對之提示詞。
+本工具<b>不提供示範條款</b>，亦不讀取契約內容；「不足／足夠／較強」之描述係說明條款特徵，供判斷之用。</p>
+
+<div class="cols">
+
+<form class="form noprint" id="f" autocomplete="off" onsubmit="return false">
+  <fieldset>
+    <legend><span class="n">01</span>立場</legend>
+    <div class="radios" id="st">
+      <label><input type="radio" name="st" value="c" checked>委託方（審閱廠商契約）</label>
+      <label><input type="radio" name="st" value="v">受託方（評估客戶要求）</label>
+    </div>
+    <label class="f" id="wholab">委託方之身分</label>
+    <select id="who">
+      <option value="s">資安法之特定非公務機關</option>
+      <option value="l">上市上櫃公司</option>
+      <option value="b">兩者皆是</option>
+    </select>
+    <label class="f" for="lvl">委託方之資通安全責任等級</label>
+    <select id="lvl">
+      <option value="">未定或不適用</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+    </select>
+  </fieldset>
+  <fieldset>
+    <legend><span class="n">02</span>契約情境</legend>
+    <label class="f">契約類型（可複選）</label>
+    <div class="cks" id="ty">
+      <label><input type="checkbox" value="dev">資通系統開發（含客製化）</label>
+      <label><input type="checkbox" value="ops" checked>資通系統維運</label>
+      <label><input type="checkbox" value="svc">雲端或其他資通服務之提供</label>
+    </div>
+    <label class="f">其他情境</label>
+    <div class="cks" id="cx">
+      <label><input type="checkbox" value="core">涉及委託方之核心資通系統</label>
+      <label><input type="checkbox" value="amt">委託金額達新臺幣一千萬元以上</label>
+      <label><input type="checkbox" value="pd">受託者將蒐集、處理或利用個人資料</label>
+      <label><input type="checkbox" value="sec">受託業務涉及國家機密</label>
+      <label><input type="checkbox" value="sub">受託者擬複委託（分包）</label>
+    </div>
+    <div class="btns">
+      <button type="button" class="b ghost" id="clr">清除勾選結果</button>
+      <button type="button" class="b ghost" onclick="window.print()">列印／存成 PDF</button>
+    </div>
+    <p class="hint">所有選項僅在本頁面中運算，不儲存、不上傳。</p>
+  </fieldset>
+</form>
+
+<div class="out">
+  <div class="card">
+    <h2><span class="n">A</span>檢視結果<small id="ctx"></small></h2>
+    <div class="sum" id="sum"></div>
+  </div>
+  <div class="card">
+    <h2><span class="n">B</span>應檢視事項<small id="cnt"></small></h2>
+    <div id="items"></div>
+  </div>
+  <div class="card">
+    <h2><span class="n">C</span><span id="gapt">缺口清單</span></h2>
+    <div class="in" id="gaps"></div>
+  </div>
+  <div class="card">
+    <h2><span class="n">D</span>交付 AI 的提示詞</h2>
+    <div class="in">
+      <pre class="prompt" id="pt"></pre>
+      <button type="button" class="b noprint" id="cp">複製提示詞</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="foot">
+  <p><b>層級之意義</b>　「法定事項」多數出自資安法施行細則第 7 條第 1 項，該項規定委外選任及監督受託者時「應注意」之事項，法規並未一律要求載入契約（涉及國家機密之適任性查核依同條第 3 項應記載於契約）；惟資安法第 10 條第 3 項要求簽訂書面契約載明雙方之權利義務及違約責任，以契約落實各該事項為通常作法。「履行所需」為作者建議，非法定之契約應載事項。</p>
+  <p><b>不計總分</b>　本工具不計算單一分數。法定事項缺漏一項即可能影響委託方之法令遵循，與其他項目之多寡無法互相抵銷。</p>
+  <p><b>參考來源</b>　「參考」欄所列條號，為行政院公共工程委員會「資訊服務採購契約範本」（113 年 12 月 26 日修正）及「資訊雲端服務採購契約範本」（114 年 12 月 30 日）之資安相關條款；條號寫法為「條（款）目」。二範本係供政府機關採購使用，於民間契約僅供對照參考。資訊服務採購契約範本第 15 條第 2 款之資安指標，已將一小時通報、72 小時（重大事件 36 小時）損害控制及一個月調查報告列為服務水準違約金之評估項目；雲端範本第 15 條第 14 款第 2 目並要求日誌自產生起保存至少六個月。</p>
+  <p><b>依據版本</b>　資通安全管理法 114.09.24 修正公布；施行細則、通報辦法 115.01.05 修正發布；分級辦法 115.01.07 修正發布；個人資料保護法施行細則 105.03.02 修正發布；上市上櫃公司資通安全管控指引 115.11.09 修正版。各項義務之條文見 <a href="a1-obligations.html">A-1 日常義務主表</a>及 <a href="b2-reporting.html">B-2 事件通報對照表</a>。</p>
+  <p><b>免責聲明</b>　本工具為法令遵循參考資料，不構成法律意見，亦不取代對個別契約之法律審閱。具體個案請諮詢法律專業人士。</p>
+  <p>資通安全管理法法令遵循工具箱／文件 C-1　作者：蔡易融　授權：CC BY-NC-SA 4.0　·　工具箱版本 ver.1.0</p>
+</div>
+</div>
+
+<script>
+/* ============================================================
+   ★★★ 要修改檢視事項，只需要改下面這一段 ★★★
+   每一筆：
+     id    ：代號
+     名    ：事項名稱
+     層    ：must 法定事項／need 履行所需／plus 強化
+     法源  ：資安法體系之依據
+     指    ：上市櫃指引之依據（有則填章次及要旨，無則 ""）
+     條件  ：何種情境才列出；x 為情境物件，回傳 true 表示列出
+     為何  ：委託方視角，為何需要
+     弱、足、強：條款特徵之描述（非示範條款）
+     範本  ：工程會資訊服務採購契約範本（113.12.26 修正）對應條款，無則 ""
+     雲    ：工程會資訊雲端服務採購契約範本（114.12.30）對應條款，無則不填
+     受    ：受託方視角，客戶可能之要求及應準備事項
+   ============================================================ */
+const 事項 = [
+  { id:"M01", 名:"書面契約及違約責任", 層:"must",
+    法源:"資安法第 10 條第 3 項", 指:"", 條件:x=>true,
+    為何:"資安法要求委外業務應與受託者簽訂書面契約，載明雙方之權利義務及違約責任。",
+    弱:"僅有報價單、訂單或一般服務條款，未就資安事項約定義務及違約效果。",
+    足:"書面契約就資安義務逐項約定，並有對應之違約責任。",
+    強:"資安義務與違約責任逐項對應，並區分通知遲延、檢測未過、資料外洩等不同違約型態。",
+    範本:"第 16 條（十七）7", 雲:"第 15 條（十四）5", 受:"客戶將要求以書面約定資安義務及違約責任，標準服務條款通常不足。宜預先備妥可接受之資安附約版本及違約責任之底線。" },
+  { id:"M02", 名:"受託者之資安管理措施或第三方驗證", 層:"must",
+    法源:"資安法第 10 條第 1 項、第 2 項", 指:"第 32 條：確保委外廠商執行委外作業時，具備完善之資通安全管理措施", 條件:x=>true,
+    為何:"委託方應選任適當之受託者；受託者辦理受託業務之相關程序及環境，應具備完善之資通安全管理措施或通過公正第三方驗證。",
+    弱:"僅有受託者「將採取合理安全措施」之概括承諾。",
+    足:"載明受託者應維持之資安管理措施或驗證（例如資訊安全管理系統驗證），範圍涵蓋受託業務，並於契約期間維持有效。",
+    強:"另約定驗證失效或範圍變更之通知義務，及委託方得要求提出證明文件之權利。",
+    範本:"第 8 條（二十三）", 雲:"第 8 條（二十）", 受:"客戶將要求提出資安管理措施之說明或第三方驗證證書，且驗證範圍須涵蓋受託業務。宜確認證書範圍與實際提供服務之環境一致。" },
+  { id:"M03", 名:"資安專業人員之配置及資格", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 1 款", 指:"", 條件:x=>true,
+    為何:"受託者應配置充足且經適當之資格訓練、擁有資通安全專業證照或具有類似業務經驗之資通安全專業人員。",
+    弱:"未提及執行人員之資格。",
+    足:"載明受託者應配置具備相當資格或經驗之資安人員，並得應要求提出證明。",
+    強:"列明人數、資格及主要人員；人員更換應事先通知或經同意。",
+    範本:"", 受:"客戶可能要求提出專案人員之證照、訓練或經歷證明。宜備妥人員資格清冊，並評估人員更換須經同意之條款對調度之影響。" },
+  { id:"M04", 名:"複委託之許可、範圍及對象", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 2 款", 指:"", 條件:x=>true,
+    為何:"委託方應注意受託者得否複委託、得複委託之範圍與對象，及複委託之受託者應具備之資通安全維護措施。",
+    弱:"契約未提及複委託，或概括允許受託者自行分包。",
+    足:"載明得否複委託；允許者，限定範圍、對象須經同意，且複委託之受託者應具備相同之資安維護措施。",
+    強:"受託者就複委託之受託者之行為負同一責任，委託方之稽核權及於複委託之受託者。",
+    範本:"第 8 條（六）12", 雲:"第 8 條（六）12", 受:"如有分包或使用第三方雲端、維運廠商，客戶將要求事先揭露並取得同意，且分包廠商須受相同資安要求及稽核。宜盤點實際之供應鏈並與分包廠商之契約對齊。" },
+  { id:"M05", 名:"國家機密：適任性查核及出境管制", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 3 款、第 2 項、第 3 項", 指:"", 條件:x=>x.sec,
+    為何:"受託業務涉及國家機密者，執行人員應接受適任性查核並依國家機密保護法管制出境；此情形應記載於契約，查核前並應經當事人書面同意。",
+    弱:"契約未記載適任性查核及出境管制。",
+    足:"契約記載執行人員應接受適任性查核及出境管制，並約定取得當事人書面同意之程序。",
+    強:"另約定查核未通過人員之更換程序及期限。",
+    範本:"第 8 條（二十四）及附件適任性查核同意書", 受:"執行人員須接受適任性查核並受出境管制，且須取得人員之書面同意。宜於投入人員前先行確認意願及可行性。" },
+  { id:"M06", 名:"客製化開發：安全性檢測證明", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 4 款前段", 指:"第 14 條：定期執行資通系統安全性要求測試；第 17 條：系統上線前及定期執行源碼掃描安全檢測", 條件:x=>x.dev,
+    為何:"受託業務包括客製化資通系統開發者，受託者應提供該資通系統之安全性檢測證明。",
+    弱:"驗收標準僅有功能測試。",
+    足:"以提出安全性檢測證明為驗收條件，並載明檢測項目。",
+    強:"載明檢測項目、通過標準、未通過時之修補期限及複測費用負擔。",
+    範本:"第 16 條（十七）2", 受:"交付前須提出安全性檢測證明。宜將弱點掃描、源碼檢測等納入開發時程及成本，並確認客戶指定之檢測項目與通過標準。" },
+  { id:"M07", 名:"第三方安全性檢測之配合", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 4 款中段", 指:"", 條件:x=>x.dev && (x.core || x.amt),
+    為何:"該系統屬委託方之核心資通系統，或委託金額達新臺幣一千萬元以上者，委託方應自行或另行委託第三方進行安全性檢測。此為委託方自身之義務，須受託者配合始能進行。",
+    弱:"契約未約定受託者配合第三方檢測。",
+    足:"受託者應配合委託方或其指定之第三方進行安全性檢測，並提供必要之環境及資料。",
+    強:"另約定檢測發現弱點之修補期限、複測及驗收之關係。",
+    範本:"第 16 條（十七）2", 受:"客戶將自行或委託第三方檢測交付之系統。宜預留配合檢測及修補之時程，並約定檢測範圍及弱點分級之認定方式。" },
+  { id:"M08", 名:"非自行開發內容之來源標示及授權證明", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 4 款後段", 指:"第 16 條：鑑別資通系統使用之第三方軟體、服務、函式庫或其他元件", 條件:x=>x.dev,
+    為何:"涉及利用非受託者自行開發之系統或資源者，應標示非自行開發之內容與其來源及提供授權證明。",
+    弱:"未要求揭露第三方元件。",
+    足:"受託者應標示非自行開發之內容及其來源，並提供授權證明。",
+    強:"以清冊形式交付並隨版本更新，元件異動應通知。",
+    範本:"第 16 條（十七）2", 受:"須揭露使用之第三方元件、來源及授權。宜建立元件清冊之產出流程，並確認開源授權條款與交付義務相容。" },
+  { id:"M09", 名:"違反資安法令或知悉資安事件之立即通知", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 5 款", 指:"", 條件:x=>true,
+    為何:"受託者執行受託業務，違反資通安全相關法令或知悉資通安全事件時，應立即通知委託方及採行之補救措施。",
+    弱:"未約定通知義務，或僅於「確認」事件後通知。",
+    足:"受託者於知悉資通安全事件或違反資安法令時應立即通知，並說明採行之補救措施。",
+    強:"通知之觸發點包含「疑似」事件；通知內容對應委託方通報所需之項目。具體時限見「事件通知之具體時限及聯繫窗口」。",
+    範本:"第 16 條（十七）5", 雲:"第 15 條（十四）3", 受:"知悉事件即負通知義務，通常不以確認為前提。宜確認內部事件判定及對外通知流程能於客戶要求之時限內完成。" },
+  { id:"M10", 名:"終止或解除時資料之返還、移交、刪除或銷毀", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 6 款", 指:"第 34 條：終止或解除委外關係時，確認委外廠商返還、移交、刪除或銷毀履行契約而持有之資料", 條件:x=>true,
+    為何:"委託關係終止或解除時，委託方應確認受託者返還、移交、刪除或銷毀履行契約而持有之資料。",
+    弱:"未約定契約結束後之資料處置。",
+    足:"約定終止或解除時返還、移交、刪除或銷毀之義務及期限，並提出完成之證明。",
+    強:"涵蓋備份及複委託之受託者所持有之資料，並約定委託方得查驗。",
+    範本:"第 16 條（十七）3", 雲:"第 15 條（十四）2、第 17 條（十一）5", 受:"契約結束時須返還或銷毀資料並出具證明，範圍通常包括備份。宜確認備份保存週期與銷毀義務之期限是否相容。" },
+  { id:"M11", 名:"稽核權及執行情形之確認", 層:"must",
+    法源:"施行細則第 7 條第 1 項第 8 款；資安法第 10 條第 1 項", 指:"第 33 條：於採購文件中載明對委外廠商資安稽核權；第 41 條：定期辦理委外廠商之資安稽核", 條件:x=>true,
+    為何:"委託方應定期或於知悉受託者發生可能影響受託業務之資通安全事件時，以稽核或其他適當方式確認受託業務之執行情形。無契約上之稽核權，此義務難以履行。",
+    弱:"無稽核權，或僅得索取受託者之自評文件。",
+    足:"委託方得定期及於事件發生後稽核，受託者應配合並就缺失限期改善。",
+    強:"得實地稽核、得委託第三方為之，並及於複委託之受託者；缺失未改善有對應之違約效果。",
+    範本:"第 9 條（十）、第 16 條（十七）1", 雲:"第 9 條（十）、第 15 條（十四）1", 受:"客戶將保留定期及事件後之稽核權，可能包括實地稽核。可協商之處在於稽核頻率、通知期間、範圍及保密安排，全然拒絕稽核通常無法被接受。" },
+
+  { id:"N01", 名:"事件通知之具體時限及聯繫窗口", 層:"need",
+    法源:"資安法第 24 條第 2 項；通報辦法第 11 條第 1 項（委託方須於知悉後一小時內通報）", 指:"", 條件:x=>x.s,
+    為何:"委託方之一小時通報時限自其知悉時起算。受託者通知愈晚，委託方蒐集通報內容之時間愈少；契約僅寫「立即」而無具體時限及窗口，實務上難以執行。",
+    弱:"僅約定「儘速」或「合理期間內」通知，無窗口。",
+    足:"約定明確之通知時限，及全年無休之雙方聯繫窗口與代理人。",
+    強:"通知內容對應通報辦法第 3 條之項目（發生或知悉時間、狀況描述、已採取措施等），並約定後續更新之頻率。",
+    範本:"第 16 條（十七）5", 雲:"第 15 條（十四）3", 受:"客戶之法定通報時限僅一小時，故會要求極短之通知時限及全年無休窗口。宜評估監控及值班機制能否達成，時限無法達成者應於簽約前提出。" },
+  { id:"N02", 名:"配合損害控制及復原之時限", 層:"need",
+    法源:"通報辦法第 13 條第 1 項（第一、二級 72 小時；重大事件 36 小時）", 指:"第 33 條：於採購文件中載明服務水準協議(SLA)", 條件:x=>x.s || x.l,
+    為何:"委託方須於法定時限內完成損害控制或復原作業。受託者掌握系統者，其回應及復原時限應短於法定時限。",
+    弱:"服務水準僅涵蓋一般可用率，未就資安事件之回應及復原約定時限。",
+    足:"就資安事件約定回應及復原之時限，且短於委託方之法定時限。",
+    強:"依事件等級分別約定，並連結違約金或服務抵減。",
+    範本:"第 15 條（二）", 雲:"第 21 條", 受:"客戶之損害控制時限為 36 或 72 小時，會要求較短之事件回應及復原時限。宜確認備援及復原能力，並就非可歸責事由約定除外情形。" },
+  { id:"N03", 名:"提供調查資料及根因分析之期限", 層:"need",
+    法源:"資安法第 24 條第 3 項；通報辦法第 13 條第 2 項；施行細則第 12 條（一個月內送交調查、處理及改善報告，含根因分析）", 指:"", 條件:x=>x.s,
+    為何:"委託方之報告須包括事件根因分析、損害控制及調查歷程。事件發生於受託者維運之環境時，資料掌握在受託者手中。",
+    弱:"未約定受託者提供事件資料之義務。",
+    足:"受託者應於約定期限內提供事件相關紀錄、調查結果及根因分析，期限足供委託方於一個月內完成報告。",
+    強:"另約定改善措施及其完成時程之提出，以及委託方得參與或複核調查。",
+    範本:"第 15 條（二）", 雲:"第 15 條（十四）3、第 21 條", 受:"客戶須於一個月內向主管機關提出含根因分析之報告，會要求更早取得調查結果。宜備妥事件調查報告之內部範本。" },
+  { id:"N04", 名:"配合主管機關之調查及檢查", 層:"need",
+    法源:"資安法第 25 條第 1 項、第 2 項", 指:"", 條件:x=>x.s,
+    為何:"重大資通安全事件發生時，中央目的事業主管機關得通知關係人到場陳述、提出獨立第三方之鑑識或調查報告，或實地檢查；與事件相關之受託者即屬關係人。",
+    弱:"未提及配合主管機關調查。",
+    足:"受託者應配合主管機關依法所為之調查及檢查，並提供必要之資料。",
+    強:"另約定配合委託方委任之獨立第三方鑑識，及相關費用之負擔。",
+    範本:"第 16 條（十七）1", 受:"依資安法第 25 條，與重大事件相關之受託者本身即可能成為調查之關係人，不得規避、妨礙或拒絕。契約條款多為重申此義務，宜關注者為費用負擔及營業秘密之保護安排。" },
+  { id:"N05", 名:"紀錄及證據之保全", 層:"need",
+    法源:"通報辦法第 5 條第 5 款；分級辦法附表十（事件日誌與可歸責性）", 指:"第 24 條：建立資通系統及相關設備適當之監控措施，並針對日誌建立適當之保護機制", 條件:x=>x.s || x.l,
+    為何:"委託方之應變作業規範應包括事件相關紀錄之保全。日誌由受託者保存者，其保存期間及保全義務須以契約約定。",
+    弱:"未約定日誌保存。",
+    足:"約定日誌之保存期間及事件發生時之保全義務，委託方得取得相關紀錄。",
+    強:"約定日誌之完整性保護及定期備份，並於契約終止時移交。",
+    範本:"第 16 條（十七）4", 雲:"第 15 條（十四）2、第 17 條（十一）6", 受:"客戶將要求一定期間之日誌保存及事件時之證據保全。宜確認現行日誌保存期間，並評估儲存成本。" },
+  { id:"N06", 名:"危害國家資通安全產品之禁用", 層:"need",
+    法源:"資安法第 27 條", 指:"", 條件:x=>x.s,
+    為何:"中央目的事業主管機關得限制或禁止特定非公務機關下載、安裝或使用危害國家資通安全產品。受託者交付或用於受託業務之產品如屬之，委託方即有違反之虞。",
+    弱:"未就產品來源為任何約定。",
+    足:"受託者不得於受託業務使用或交付經認定之危害國家資通安全產品，並應聲明所用產品之來源。",
+    強:"另約定清單更新後之盤點、汰換義務及費用負擔。",
+    範本:"第 8 條（二十四）", 雲:"第 19 條（五）", 受:"客戶將要求聲明受託業務不使用危害國家資通安全產品。宜盤點設備及軟體之廠牌來源，並留意清單日後更新之汰換成本由何方負擔。" },
+  { id:"N07", 名:"交付系統符合資通系統防護基準", 層:"need",
+    法源:"分級辦法第 11 條第 2 項前段；附表九、附表十", 指:"第 13 條：將資安要求納入資通系統開發及維護需求規格", 條件:x=>x.dev && (x.abc || x.l),
+    為何:"委託方自行或委外開發之資通系統，應完成防護需求分級並依附表十之防護基準執行控制措施。系統由受託者開發者，控制措施須於需求規格中載明。",
+    弱:"需求規格未載明資安需求。",
+    足:"需求規格載明系統之防護需求等級及應達成之控制措施，並列為驗收項目。",
+    強:"逐項對應附表十各構面之控制措施，並約定日後基準修正時之調整機制。",
+    範本:"", 雲:"第 15 條（十四）6", 受:"客戶將於需求規格指定防護需求等級（高、中、普）及對應之控制措施。宜於報價前確認等級，等級為高者之控制措施（例如多因子鑑別、異地備份）成本顯著較高。" },
+  { id:"N08", 名:"弱點通報及修補時限", 層:"need",
+    法源:"分級辦法附表「資通安全弱點管理」（知悉弱點時應適時修補或採行緩解措施）", 指:"第 16 條：宜於契約規範供應商主動通報安全性漏洞，於時限內提供修補程式或安全更新", 條件:x=>x.abc || x.l,
+    為何:"委託方知悉資通安全弱點時，應適時修補或採行緩解措施。弱點存在於受託者提供之系統或服務者，修補須由受託者為之。",
+    弱:"未約定弱點處理，或修補須另行計價而無時限。",
+    足:"受託者應主動通報所知之安全性弱點，並於約定時限內提供修補或緩解措施。",
+    強:"依弱點嚴重程度分級約定時限，並涵蓋第三方元件之弱點。",
+    範本:"", 受:"客戶將要求主動通報弱點並限時修補。宜依嚴重程度協商分級時限，並釐清維護期滿後之修補義務。" },
+  { id:"N09", 名:"配合安全性檢測、健診及演練", 層:"need",
+    法源:"分級辦法附表（弱點掃描、滲透測試、資通安全健診、營運持續計畫演練）；資安法第 10 條第 4 項", 指:"第 10 條：定期辦理核心業務營運持續計畫演練；第 17 條：針對核心資通系統應辦理資安檢測作業", 條件:x=>x.core && (x.abc || x.l),
+    為何:"委託方須就全部核心資通系統定期辦理安全性檢測及營運持續計畫演練。系統由受託者維運者，須其配合始能辦理。",
+    弱:"未約定配合檢測或演練，或約定禁止委託方對系統進行檢測。",
+    足:"受託者應配合委託方依法應辦之檢測、健診及演練。",
+    強:"約定配合之頻率、通知期間及費用負擔，並就檢測發現之弱點約定修補期限。",
+    範本:"", 受:"客戶依其責任等級須定期辦理弱點掃描、滲透測試及演練，會要求配合。雲端服務如禁止客戶自行檢測，宜提供替代之檢測報告。" },
+  { id:"N10", 名:"保密義務及人員管理", 層:"need",
+    法源:"資安法第 10 條第 1 項（要求受託者建立有效之資通安全管理機制）", 指:"第 33 條：訂定委外廠商之資通安全責任及保密規定", 條件:x=>true,
+    為何:"受託者人員接觸委託方之資訊及系統，保密義務及人員異動之管理為資安管理機制之基本要素。",
+    弱:"僅有公司間之保密條款，未及於執行人員。",
+    足:"保密義務及於受託者之執行人員及複委託之受託者，並於契約終止後存續。",
+    強:"執行人員簽署保密文件，人員異動應通知並即時撤銷存取權限。",
+    範本:"第 8 條（三）4、第 20 條", 雲:"第 19 條", 受:"客戶可能要求執行人員個別簽署保密文件，並於人員異動時通知。宜備妥人員保密文件及離職時撤銷權限之流程。" },
+  { id:"N11", 名:"個人資料：委託監督事項", 層:"need",
+    法源:"個人資料保護法施行細則第 8 條；資安法第 33 條", 指:"", 條件:x=>x.pd,
+    為何:"委託他人蒐集、處理或利用個人資料時，委託方應對受託者為適當之監督，至少包含蒐用之範圍及期間、安全維護措施、複委託之受託者、違法時之通知及補救、保留指示事項、終止時之返還及刪除等六款事項，並應定期確認執行狀況且記錄之。",
+    弱:"未就個人資料之處理另為約定。",
+    足:"契約涵蓋個人資料保護法施行細則第 8 條第 2 項所列六款事項。",
+    強:"另約定個資事故之通知時限，及委託方定期確認之方式與紀錄。",
+    範本:"第 15 條（二）", 受:"涉及個人資料者，客戶負有監督義務，會要求約定蒐用範圍、安全措施、事故通知及資料返還刪除。宜確認僅於客戶指示範圍內蒐用個人資料。" },
+  { id:"N12", 名:"重大訊息所需資訊之即時提供", 層:"need",
+    法源:"上市公司、上櫃公司重大訊息之查證暨公開處理程序第 4 條第 1 項第 26 款、第 6 條第 1 項第 1 款", 指:"第 37 條：發生符合重大訊息處理程序規範之重大資安事件，應依相關規定辦理", 條件:x=>x.l,
+    為何:"上市櫃公司之資通安全事件如構成重大訊息，應於事實發生日起次一營業日交易時間開始二小時前輸入公開資訊觀測站。事件發生於受託者處者，評估重大性所需之資訊須由受託者即時提供。",
+    弱:"未約定受託者提供事件影響評估資訊。",
+    足:"受託者應即時提供事件影響範圍及損害之初步評估資訊。",
+    強:"另約定受託者對外發言之限制及協調機制，避免先於委託方之公告。",
+    範本:"第 16 條（十七）5", 受:"上市櫃客戶須於次一營業日開盤前發布重大訊息，會要求即時提供影響評估，並限制受託者先行對外說明。宜指定對外發言之協調窗口。" },
+
+  { id:"P01", 名:"資安服務水準違約金", 層:"plus",
+    法源:"資安法第 10 條第 3 項（契約應載明違約責任）", 指:"第 33 條：於採購文件中載明服務水準協議(SLA)", 條件:x=>true,
+    為何:"通知遲延、復原逾時等情形之損害難以舉證，預定違約金可提供明確之違約效果。",
+    弱:"資安義務之違反無具體違約效果。",
+    足:"就通知遲延、復原逾時、驗證失效等約定違約金或服務抵減。",
+    強:"違約金依事件等級及遲延時間計算，且不影響另行請求損害賠償。",
+    範本:"第 15 條（二）", 雲:"第 14 條、第 21 條", 受:"客戶可能就通報遲延、復原逾時等約定違約金。宜協商上限，並區分可歸責與不可歸責之情形。" },
+  { id:"P02", 名:"損害賠償及責任上限之安排", 層:"plus",
+    法源:"資安法第 29 條、第 30 條（委託方自身之罰鍰風險）", 指:"", 條件:x=>true,
+    為何:"委託方未依規定通報最高可處新臺幣一千萬元罰鍰，另有個資求償及商譽損失。責任上限如以契約價金為限，可能遠低於實際損害。",
+    弱:"資安事件之賠償受一般責任上限限制，且排除間接損害。",
+    足:"資安事件及資料外洩之責任另設較高上限，或自一般上限中排除。",
+    強:"涵蓋主管機關罰鍰、通知當事人及鑑識之費用，並輔以保險。",
+    範本:"第 16 條（十七）7", 雲:"第 15 條（十四）5", 受:"客戶可能要求資安事件不受一般責任上限限制，並求償罰鍰及鑑識費用。此為主要之商業協商點，宜評估可承擔之上限及保險涵蓋範圍。" },
+  { id:"P03", 名:"因資安違約之終止、解除或暫停", 層:"plus",
+    法源:"資安法第 10 條第 1 項（監督受託者資安管理機制之實施）", 指:"第 32 條：委外關係終止之相關規定", 條件:x=>true,
+    為何:"受託者重大違反資安義務而無終止權者，委託方之監督缺乏最終手段。",
+    弱:"資安違約非終止事由。",
+    足:"重大違反資安義務或未於期限內改善者，委託方得終止、解除或暫停契約。",
+    強:"另約定終止後之移轉協助義務及期間。",
+    範本:"第 18 條（一）13", 雲:"第 17 條（一）13", 受:"重大資安違約可能成為客戶之終止事由。宜協商改善期間，並約定終止後移轉協助之計價。" },
+  { id:"P04", 名:"資安保險", 層:"plus",
+    法源:"無（作者建議）", 指:"", 條件:x=>true,
+    為何:"受託者之賠償能力有限時，保險為責任安排之實質擔保。",
+    弱:"未提及保險。",
+    足:"受託者應投保涵蓋資安事件之保險並維持有效。",
+    強:"約定最低保額、承保範圍，並應提出保險證明。",
+    範本:"第 10 條（保險種類由機關擇定，未列資安保險）", 受:"客戶可能要求投保並提出證明。宜確認現有保單是否涵蓋受託業務及約定之保額。" },
+  { id:"P05", 名:"控制權或供應鏈變動之通知", 層:"plus",
+    法源:"資安法第 10 條第 1 項；第 27 條", 指:"", 條件:x=>true,
+    為何:"受託者之股權結構、主要分包廠商或所用產品來源變動，可能影響其是否仍為適當之受託者。",
+    弱:"未約定變動之通知。",
+    足:"受託者之控制權、主要複委託對象或所用主要產品來源變動時，應通知委託方。",
+    強:"特定變動構成終止事由。",
+    範本:"第 18 條（一）15", 雲:"第 17 條（一）15", 受:"客戶可能要求於股權或主要分包廠商變動時通知，特定變動得終止契約。宜評估對未來交易安排之限制。" },
+  { id:"P06", 名:"資料儲存及備援之所在地", 層:"plus",
+    法源:"無（作者建議）", 指:"", 條件:x=>x.svc,
+    為何:"雲端服務之資料存取、備份及備援所在地，影響資料之管轄及主管機關調查之可行性；工程會雲端範本並明定不得位於特定地區或跨該等境內傳輸。",
+    弱:"未約定資料所在地，受託者得自行決定或變更。",
+    足:"載明資料存取、備份及備援之實體所在地，變更應事先通知或經同意。",
+    強:"限定所在地之範圍，違反者構成終止事由。",
+    範本:"", 雲:"第 19 條（六）、第 17 條（一）16", 受:"客戶可能限定資料存取、備份及備援之所在地。宜確認實際之機房及備援地點，並評估變更地點須經同意對營運之影響。" }
+];
+
+const 層名 = { must:"法定事項", need:"履行所需", plus:"強化", guide:"指引建議", ref:"參照資安法" };
+const 層序 = ["must","need","guide","ref","plus"];
+const 況委 = ["無此約定","有但不足","足夠","較強","不適用"];
+const 況受 = ["尚未準備","部分準備","已準備","優於要求","不適用"];
+
+/* ============================================================
+   以下為運算與顯示邏輯
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const 答 = {};
+
+function 情境(){
+  const who = $("#who").value, lvl = $("#lvl").value;
+  const ty = [...document.querySelectorAll("#ty input:checked")].map(i=>i.value);
+  const cx = [...document.querySelectorAll("#cx input:checked")].map(i=>i.value);
+  const s = who !== "l", l = who !== "s";
+  return { st: document.querySelector("input[name=st]:checked").value, who, lvl, s, l,
+    dev: ty.includes("dev"), ops: ty.includes("ops"), svc: ty.includes("svc"),
+    core: cx.includes("core"), amt: cx.includes("amt"), pd: cx.includes("pd"), sec: cx.includes("sec"), sub: cx.includes("sub"),
+    abc: s && (lvl === "" || "ABC".includes(lvl)) };
+}
+/* 依委託方身分決定顯示之層級 */
+function 層(it, x){
+  if (x.s) return it.層;
+  if (it.層 === "plus") return "plus";
+  if (it.id === "N12") return "need";
+  return it.指 ? "guide" : "ref";
+}
+function 渲染(){
+  const x = 情境(), 受 = x.st === "v";
+  $("#wholab").textContent = 受 ? "客戶（委託方）之身分" : "委託方之身分";
+  document.querySelector('label[for=lvl]').textContent = 受 ? "客戶之資通安全責任等級" : "委託方之資通安全責任等級";
+  $("#lvl").disabled = !x.s;
+  const 況 = 受 ? 況受 : 況委;
+  const list = 事項.filter(it => it.條件(x)).map(it => ({...it, L: 層(it,x)}))
+    .sort((a,b) => 層序.indexOf(a.L) - 層序.indexOf(b.L));
+  $("#cnt").textContent = `共 ${list.length} 項`;
+  $("#ctx").textContent = (受?"受託方立場":"委託方立場") + "　·　" + {s:"特定非公務機關",l:"上市上櫃公司",b:"特定非公務機關兼上市上櫃公司"}[x.who] + (x.s&&x.lvl?`（${x.lvl} 級）`:"");
+  $("#items").innerHTML = list.map(it => {
+    const a = 答[it.id];
+    return `<div class="it ${a!==undefined&&a<4?"g"+a:""}" id="i-${it.id}">
+      <div class="hd"><span class="tag t-${it.L}">${層名[it.L]}</span><span class="nm">${esc(it.名)}</span></div>
+      <p class="src">${x.s||it.L==="plus"||it.id==="N12" ? esc(it.法源) : "資安法體系：" + esc(it.法源) + "（委託方非特定非公務機關者不適用，供參考）"}${x.l&&it.指?`<br>上市櫃指引${esc(it.指)}`:""}</p>
+      ${受 ? `<p class="vd">${esc(it.受)}</p><p class="why">客戶之理由：${esc(it.為何)}</p>` : `<p class="why">${esc(it.為何)}</p>`}
+      <div class="lv3"><div class="w"><b>不足</b>${esc(it.弱)}</div><div class="o"><b>足夠</b>${esc(it.足)}</div><div class="s"><b>較強</b>${esc(it.強)}</div></div>
+      ${it.範本||it.雲?`<p class="pcc">參考　${[it.範本&&"資訊服務採購契約範本"+esc(it.範本), it.雲&&"資訊雲端服務採購契約範本"+esc(it.雲)].filter(Boolean).join("；")}</p>`:""}
+      <div class="radios noprint">${況.map((t,i)=>`<label><input type="radio" name="a-${it.id}" value="${i}" ${a===i?"checked":""}>${t}</label>`).join("")}</div>
+    </div>`;
+  }).join("");
+
+  /* 統計 */
+  const 計 = {}; 層序.forEach(L => 計[L] = {n:0, gap:0, na:0, un:0});
+  const 缺 = [];
+  for (const it of list){
+    const c = 計[it.L], a = 答[it.id]; c.n++;
+    if (a === undefined) c.un++;
+    else if (a === 4) c.na++;
+    else if (a < 2){ c.gap++; 缺.push({...it, a}); }
+  }
+  $("#sum").innerHTML = 層序.filter(L => 計[L].n).map(L => {
+    const c = 計[L];
+    return `<div><div class="k">${層名[L]}</div><div class="v ${c.gap?"red":(c.un?"":"ok")}">${c.gap}<small>　項${受?"未備妥":"缺口"}／共 ${c.n - c.na} 項${c.un?`，${c.un} 項未勾選`:""}</small></div></div>`;
+  }).join("");
+
+  $("#gapt").textContent = 受 ? "準備缺口清單" : "缺口清單";
+  $("#gaps").innerHTML = 缺.length ? 缺.map(it => `<div class="gap"><span class="tag t-${it.L}">${層名[it.L]}</span>　<b>${esc(it.名)}</b>　<span style="color:var(--muted);font-size:12.5px">${況[it.a]}</span>
+      <small>${受 ? esc(it.受) : "補強方向：" + esc(it.足)}</small></div>`).join("")
+    : `<p style="margin:0;color:var(--muted);font-size:13.5px">${list.every(it=>答[it.id]===undefined) ? "尚未勾選。於上方逐項勾選契約現況後，此處列出缺口。" : "已勾選之事項中無缺口。"}</p>`;
+
+  /* 提示詞 */
+  const 清 = list.map((it,i) => `${i+1}. 【${層名[it.L]}】${it.名}（${it.法源}${x.l&&it.指?"；上市櫃指引"+it.指.split("：")[0]:""}）\n   足夠之條款特徵：${it.足}`).join("\n");
+  const 提示 = 受
+? `你是熟悉臺灣資通安全管理法及委外契約之法務顧問。我方為受託廠商，客戶為${{s:"資通安全管理法所定之特定非公務機關",l:"上市上櫃公司",b:"特定非公務機關且為上市上櫃公司"}[x.who]}${x.s&&x.lvl?`（資通安全責任等級 ${x.lvl} 級）`:""}。請依下列檢視事項，逐項比對我接著貼上的契約草案，並就每一項回答：
+(1) 契約中對應之條款及其條號，未約定者註明「未約定」；
+(2) 該條款對我方課予之義務強度（低於、相當於或高於「足夠之條款特徵」）；
+(3) 我方履行上之風險及可協商之處。
+請勿自行推測契約未載明之內容；無法判斷者標示「待確認」。不需要代擬條款文字。
+
+【契約情境】契約類型：${[x.dev&&"系統開發",x.ops&&"系統維運",x.svc&&"資通服務提供"].filter(Boolean).join("、")||"未指定"}；${[x.core&&"涉及客戶核心資通系統",x.amt&&"金額達一千萬元以上",x.pd&&"涉及個人資料",x.sec&&"涉及國家機密",x.sub&&"擬複委託"].filter(Boolean).join("；")||"無其他特殊情境"}
+
+【檢視事項】
+${清}`
+: `你是熟悉臺灣資通安全管理法及委外契約之法務顧問。我方為委託方，身分為${{s:"資通安全管理法所定之特定非公務機關",l:"上市上櫃公司",b:"特定非公務機關且為上市上櫃公司"}[x.who]}${x.s&&x.lvl?`（資通安全責任等級 ${x.lvl} 級）`:""}。請依下列檢視事項，逐項比對我接著貼上的契約，並就每一項回答：
+(1) 契約中對應之條款及其條號，未約定者註明「未約定」；
+(2) 依「足夠之條款特徵」評估為「不足」「足夠」或「較強」，並說明理由；
+(3) 屬「法定事項」而不足或未約定者，於最前面彙整列出。
+請勿自行推測契約未載明之內容；無法判斷者標示「待確認」。不需要代擬條款文字。
+
+【契約情境】契約類型：${[x.dev&&"系統開發",x.ops&&"系統維運",x.svc&&"資通服務提供"].filter(Boolean).join("、")||"未指定"}；${[x.core&&"涉及我方核心資通系統",x.amt&&"金額達一千萬元以上",x.pd&&"受託者將蒐用個人資料",x.sec&&"涉及國家機密",x.sub&&"受託者擬複委託"].filter(Boolean).join("；")||"無其他特殊情境"}
+
+【檢視事項】
+${清}`;
+  $("#pt").textContent = 提示;
+}
+
+document.getElementById("f").addEventListener("change", 渲染);
+$("#items").addEventListener("change", e => {
+  const r = e.target; if (!r.name || !r.name.startsWith("a-")) return;
+  答[r.name.slice(2)] = +r.value;
+  const y = window.scrollY; 渲染(); window.scrollTo(0, y);
+});
+$("#clr").addEventListener("click", () => { for (const k in 答) delete 答[k]; 渲染(); });
+$("#cp").addEventListener("click", e => {
+  const b = e.target, t = $("#pt").textContent;
+  const ok = () => { b.textContent = "已複製"; setTimeout(()=>b.textContent="複製提示詞",1400); };
+  try { navigator.clipboard.writeText(t).then(ok, ()=>{ getSelection().selectAllChildren($("#pt")); }); }
+  catch(_) { getSelection().selectAllChildren($("#pt")); }
+});
+渲染();
+</script>
+<script>
+/* 左側章節縱軸：依頁面上之章節標題自動建立，隨捲動標示目前位置 */
+(function(){
+  var SEL = "h2.sec, h2.part, .stage > h2, .card > h2";
+  var el = document.createElement("nav"); el.className = "rail"; el.setAttribute("aria-label","章節");
+  document.body.appendChild(el);
+  var heads = [], sig = "";
+  function label(h){
+    var c = h.cloneNode(true);
+    c.querySelectorAll("small,.dl").forEach(function(x){ x.remove(); });
+    var n = c.querySelector(".n"), t = "";
+    if (n){ t = n.textContent.trim() + "　"; n.remove(); }
+    return (t + c.textContent.trim()).replace(/\s+/g," ");
+  }
+  function code(h){ var n = h.querySelector(".n"); return n ? n.textContent.trim() : ""; }
+  function mark(){
+    var cur = -1;
+    for (var i = 0; i < heads.length; i++){ if (heads[i].getBoundingClientRect().top <= 140) cur = i; }
+    if (cur < 0 && heads.length) cur = 0;
+    if (heads.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = heads.length - 1;
+    el.querySelectorAll("a").forEach(function(a,i){ a.classList.toggle("on", i === cur); });
+  }
+  function build(){
+    var hs = [].slice.call(document.querySelectorAll(SEL)).filter(function(h){ return h.offsetParent !== null; });
+    var s = hs.map(label).join("|");
+    if (s !== sig){
+      sig = s; heads = hs;
+      el.innerHTML = hs.map(function(h,i){ var t = label(h).replace(/[&<>"]/g,""); return '<a data-i="'+i+'" title="'+t+'"><i></i><b>'+code(h).replace(/[&<>"]/g,"")+'</b><span>'+t+'</span></a>'; }).join("");
+      var on = hs.length >= 2;
+      el.classList.toggle("on", on); document.body.classList.toggle("hasrail", on);
+    } else { heads = hs; }
+    mark();
+  }
+  el.addEventListener("click", function(e){
+    var a = e.target.closest("a"); if (!a) return;
+    var h = heads[+a.dataset.i]; if (!h) return;
+    window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - 16, behavior: "smooth" });
+  });
+  var tk = 0;
+  window.addEventListener("scroll", function(){ if (!tk){ tk = requestAnimationFrame(function(){ tk = 0; mark(); }); } }, { passive:true });
+  window.addEventListener("resize", mark);
+  var t2 = 0;
+  new MutationObserver(function(m){
+    for (var i = 0; i < m.length; i++){ if (el.contains(m[i].target)) continue; clearTimeout(t2); t2 = setTimeout(build, 120); return; }
+  }).observe(document.body, { childList:true, subtree:true });
+  build();
+})();
+</script>
+</body>
+</html>
